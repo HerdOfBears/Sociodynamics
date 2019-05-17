@@ -16,10 +16,10 @@ function photo = photosynthesis(C_at, T, pCO2a, k_p, C_veg0, k_a, k_MM, k_c, K_M
         K_M    = MIchaelis-Menton rate const.; half-sat. pt. for photo.
         T_0    = initial temp. 
     %}
-    cond1 = (pCO2a >= k_c);
+    cond1 = (pCO2a > k_c);
     %cond2 = ((T-T_0) >=-15) & ((T-T_0)<=25);
-    cond2 = (T >=-15) & (T<=25);
-    if cond1 & cond2
+    cond2 = (T >-15) & (T<25);
+    if cond1 && cond2
         %photo = k_p .* C_veg0 .* k_MM .* ( (pCO2a - k_c)./(K_M + pCO2a -k_c) ).*( (((15+(T-T_0)).^2).*(25-(T-T_0)))./(5625) );
         photo = k_p .* C_veg0 .* k_MM .* ( (pCO2a - k_c)./(K_M + pCO2a -k_c) ).*( (((15+(T)).^2).*(25-(T)))./(5625) );    
     else

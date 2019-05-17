@@ -11,7 +11,7 @@ function resp_soil = soil_respiration(T, C_so, k_sr, k_B, T_0, C_so0)
         C_so0= initial carbon in soil
     %}
     %resp_soil = k_sr.*C_so .* k_B .* exp( -(308.56)./(T-227.13) );
-    resp_soil = k_sr.*(C_so+C_so0) .* k_B .* exp( -(308.56)./(T+T_0-227.13) );    
+    resp_soil = k_sr.*(C_so+C_so0) .* k_B .* exp( (-1).*(308.56)./(T + T_0 - 227.13) );    
     % disp('resp_soil=')
     % disp(resp_soil)
 end

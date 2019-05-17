@@ -12,4 +12,5 @@ function dC_atdt = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon)
     %}
     x = 0; % turning off social model
     dC_atdt = epsilon .* (1-x) - P + R_veg + R_so - F_oc;
+    %dC_atdt = - P + R_veg + R_so - F_oc;
 end
