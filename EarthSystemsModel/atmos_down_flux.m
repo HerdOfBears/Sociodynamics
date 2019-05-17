@@ -27,5 +27,5 @@ function flux_down = atmos_down_flux(pCO2a, A, S, P_0, L, T, tao_CH4, T_0)
     tao_H2O = 0.0126.* ( H.* P_0.*exp( -(L./(R.*(T+T_0)))) ).^(0.503);
     tao_ = tao_CH4 + tao_CO2 + tao_H2O;
     
-    flux_down = ( ((1-A).*S)./4 ).*(1+(3/4)).*tao_;
+    flux_down = ( ((1-A).*S)./4 ).*(1+(3/4).*tao_);
 end

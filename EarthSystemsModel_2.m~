@@ -12,10 +12,10 @@ data(:,2) = data(:,2)./1000; % Convert from MtC -> GtC
 Most are initially zero because we are computing deviations from
 the initial value. 
 %}
-initial_conditions = [0; 0; 0; 0; 0];%288.15];
-tspan = 1800:2050;
+initial_conditions = [0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
+tspan = 1751:2050;
 opts = odeset('AbsTol',1e-7);
-[t, y_] = ode45(@syst_odes, tspan, initial_conditions)
+[t, y_] = ode15s(@syst_odes, tspan, initial_conditions)
 
 function yprime = syst_odes(t, x_vec)
 
@@ -105,7 +105,12 @@ function yprime = syst_odes(t, x_vec)
     
     % disp(F_d)
     
-    epsilon_T = 0;%baseline_CO2_emis(t, eps_max, s_, data);
+    epsilon_T = baseline_CO2_emis(t, eps_max, s_, data);
+    
+    %%%%%%%%%%%%%%%%
+    %%%%% ODEs
+    %%%%%%%%%%%%%%%%
+    
     %%% Carbon uptake DEs
     x=0;
     

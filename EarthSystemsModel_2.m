@@ -4,7 +4,7 @@ addpath('./Sociodynamics/EarthSystemsModel');
 global data
 data = csvread('Documents/prelim/global.1751_2014.csv');
 data = data(:,[1,2]); % The first two columns are: time, CO2 emissions
-data(:,2) = data(:,2);%./1000; % Convert from MtC -> GtC
+data(:,2) = data(:,2)./1000; % Convert from MtC -> GtC
 %data(:,1) = data(:,1) - 1751;
 
 % Initial conditions.
@@ -13,9 +13,9 @@ Most are initially zero because we are computing deviations from
 the initial value. 
 %}
 initial_conditions = [0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
-tspan = 1751:2050;
+tspan = 1751:2200;
 opts = odeset('AbsTol',1e-7);
-[t, y_] = ode15s(@syst_odes, tspan, initial_conditions)
+[t, y_] = ode15s(@syst_odes, tspan, initial_conditions);
 
 function yprime = syst_odes(t, x_vec)
 
@@ -86,12 +86,14 @@ function yprime = syst_odes(t, x_vec)
     
     
     %%%%%%%%%%%%%%%%
-    %%% Functions to solve
+    %%% Functions
     %%%%%%%%%%%%%%%%
     
-    % Socio-dynamics model
+    %%%% Socio-dynamics model
     
-    % Compute intermediates (resp. and photosynthesis etc.)
+    
+    %%%% Compute intermediates (resp. and photosynthesis etc.)
+    
     pCO2a = mixingCO2a(C_at, C_at0, f_gtm, k_a);
 %     disp('pCO2a = ')
 %     disp(pCO2a)
@@ -103,9 +105,14 @@ function yprime = syst_odes(t, x_vec)
     F_oc  = ocean_flux(C_at, C_oc, F_0, chi, zeta, C_at0, C_oc0);
     F_d   = atmos_down_flux(pCO2a, A, S, P_0, latent_heat, T, tao_CH4, T_0);
     
-    % disp(F_d)
+    disp(F_d)
     
     epsilon_T = baseline_CO2_emis(t, eps_max, s_, data);
+    
+    %%%%%%%%%%%%%%%%
+    %%%%% ODEs
+    %%%%%%%%%%%%%%%%
+    
     %%% Carbon uptake DEs
     x=0;
     
