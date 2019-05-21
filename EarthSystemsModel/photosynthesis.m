@@ -25,6 +25,4 @@ function photo = photosynthesis(C_at, T, pCO2a, k_p, C_veg0, k_a, k_MM, k_c, K_M
     else
         photo = 0;
     end
-    disp('phto = ')
-    disp(photo)
 end

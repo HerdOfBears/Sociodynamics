@@ -1,4 +1,4 @@
-function dC_atdt = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon)
+function dC_atdt = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon, x0)
     % Time rate of change for C_at
     %{
     Variables:
@@ -11,6 +11,5 @@ function dC_atdt = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon)
         epsilon = baseline CO2 emissions
     %}
     
-    dC_atdt = epsilon .* (1-x) - P + R_veg + R_so - F_oc;
-    %dC_atdt = - P + R_veg + R_so - F_oc;
+    dC_atdt = epsilon .* ((1-x)./(1-x0)) - P + R_veg + R_so - F_oc;   
 end

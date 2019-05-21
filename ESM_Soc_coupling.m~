@@ -31,11 +31,9 @@ hold on
 xlim([1900,2200])
 ylim([0,5])
 
-temp_std = sqrt(temp_var);
-upper_y_ = data_bestCase_medParams(:,end)+temp_std;
-lower_y_ = data_bestCase_medParams(:,end)-temp_std;
-plot(t, upper_y_)
-plot(t, lower_y_)
+temp_std = sqrt(temp_var)
+
+plot(t, temp_std(:,end))
 
 % csvwrite('Sociodynamics/BestCase_medParams.csv', temp_avg)
 

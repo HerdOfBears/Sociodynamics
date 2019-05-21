@@ -16,5 +16,5 @@ function dc_Tdt = c_T_dot(t, F_d, T, c, T_0)
     a_E   = 5.101.* 10^(14);
     SecondsToYrs = 60*60*24*365;
     % 0.0381 = secondstoyrs*a_E/c = 0.0343
-    dc_Tdt = (F_d - sigma.*(T+T_0).^4).*0.0343;%.*SecondsToYrs.*a_E.*(1./c);
+    dc_Tdt = (F_d - sigma.*(T+T_0).^4).*SecondsToYrs.*a_E.*(1./c);
 end
