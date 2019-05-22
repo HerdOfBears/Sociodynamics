@@ -26,38 +26,13 @@ N = 2;
 
 temp_y_ = coupled_soc_esm(data);
 plot(temp_y_(:,1),temp_y_(:,end))
-csvwrite('Sociodynamics/BestCase_BaselineParams.csv', temp_y_)
-%{
-for idx_ = 1:1:N
-    temp_y_ = coupled_soc_esm(data);
-    if idx_==1
-        temp_tot = temp_y_;
-        temp_var = ( temp_y_(:,end) - data_bestCase_medParams(:,end) ).^2;
-    end
-    if idx_>1
-        temp_tot = temp_tot + temp_y_;
-        temp_var = temp_var + ( temp_y_(:,end) - data_bestCase_medParams(:,end) ).^2;
-    end
-end
-temp_avg = temp_tot ./ (N);
-temp_var = temp_var ./ (N-1);
-t  = temp_avg(:,1);
-y_ = temp_avg(:,2:end);
-plot(t, data_bestCase_medParams(:,end))
-%}
+
+%csvwrite('Sociodynamics/BestCase_BaselineParams.csv', temp_y_)
+
 hold on
 xlim([1900,2200])
 ylim([0,5])
 
-%{
-temp_std = sqrt(temp_var);
-upper_y_ = data_bestCase_medParams(:,end)+temp_std;
-lower_y_ = data_bestCase_medParams(:,end)-temp_std;
-plot(t, upper_y_)
-plot(t, lower_y_)
-%}
-
-% csvwrite('Sociodynamics/BestCase_medParams.csv', temp_avg)
 
 function results_dXdt = coupled_soc_esm(data)
     global tinitial
