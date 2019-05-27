@@ -114,17 +114,23 @@ data_1741_to_2014 = csvread('./Sociodynamics/baselineParams_woSoc_1751to2014.csv
 temp_history = data_1741_to_2014(:,[1,end]);
 
 %initial_conditions = [0.05 ,data_1741_to_2014(end,2:end)];%[0.05; 0;0;0;0;0];
-initial_conditions = [0.05; 0;0;0;0;0];
+%initial_conditions = [0.05; 0;0;0;0;0];
+test_1751to2014  = csvread('test_1751to2014.csv');
+initial_conditions  = test_1751to2014(end,2:end)' %transposed
 t_final = 2200;
-tspan = 1751:0.01:t_final;
+tspan = 2014:0.01:t_final;
 y = zeros(numel(tspan),6);
 x0=0.05;
 avg_ = 0;
 N=1;
 for idx_ = 1:1:N
-    
-    results_ = RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, temp_history, x0);
+
+    results_ = RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, test_1751to2014, x0);
+%    results_ = RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, temp_history, x0);
     avg_ = avg_ + results_(:,2:end);
+    disp(size(tspan'))
+    disp(size(results_))
+    csvwrite('test_2014to2200.csv',[tspan', results_])
 end
 %y(1,:) = initial_conditions;  % y0
 
@@ -165,15 +171,23 @@ function y = RK4(odefun, tspan, y0, params_given, temp_history, x0)
         if i <= -1
             T_prev = interp1(temp_history(:,1), temp_history(:,end), t(i)); 
         end
-        if t(i)>2014%i>t_p
+        if t(i)>2014 && t(i)<2024%i>t_p
+            disp(1000-i)
+            T_prev = temp_history(end - (1000 - i),end);
+            %T_prev = y(i-1000,end);
+        end
+        if t(i)>2024
             T_prev = y(i-1000,end);
         end
         k(1, :) = odefun(t(i), y(i,:), params_given, T_prev, x0);        
         k(2, :) = odefun(t(i) + (h/2), y(i,:) + (h/2)*k(1,:), params_given, T_prev, x0);        
         k(3, :) = odefun(t(i) + (h/2), y(i,:) + (h/2)*k(2,:), params_given, T_prev, x0);
+        %{
         if t(i)>2014%i>t_p
+            disp(i+1-1000)
             T_prev = y(i+1-1000,end);
-        end        
+        end
+        %}
         k(4, :) = odefun(t(i) + h, y(i,:) + h*k(3,:), params_given, T_prev, x0);
 
         y(i+1, :) = y(i, :) + (h/6)*sum(b.*k);    

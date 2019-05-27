@@ -3,43 +3,71 @@ addpath('./Sociodynamics/EarthSystemsModel');
 addpath('./Sociodynamics/SocialDynamicsModel');
 
 global data
+global tinitial
+global tfinal
+
 data = csvread('Documents/prelim/global.1751_2014.csv');
 data = data(:,[1,2]); % The first two columns are: time, CO2 emissions
 data(:,2) = data(:,2)./1000; % Convert from MtC -> GtC
 %data(:,1) = data(:,1) - 1751;
+
 data_bestCase_medParams = csvread('./Sociodynamics/BestCase_medParams.csv');
+data_1741_to_2014       = csvread('./Sociodynamics/BestCase_BaselineParams.csv');
+
+tinitial = 2014;
+tfinal   = 2200;
 
 rng('default');
-N = 100;
-for idx_ = 1:1:N
-    temp_y_ = coupled_soc_esm(data);
-    if idx_==1
-        temp_tot = temp_y_;
-        temp_var = ( temp_y_(:,end) - data_bestCase_medParams(:,end) ).^2;
+doing_stats = 0;
+
+if doing_stats
+    N = 200;
+    for idx_ = 1:1:N
+        temp_y_ = coupled_soc_esm(data);
+        if idx_==1
+            temp_tot = temp_y_;
+            temp_var = ( temp_y_(:,end) - data_bestCase_medParams(end-(2200-2014):end,end) ).^2;
+        end
+        if idx_>1
+            temp_tot = temp_tot + temp_y_;
+            temp_var = temp_var + ( temp_y_(:,end) - data_bestCase_medParams(end-(2200-2014):end,end) ).^2;
+        end
     end
-    if idx_>1
-        temp_tot = temp_tot + temp_y_;
-        temp_var = temp_var + ( temp_y_(:,end) - data_bestCase_medParams(:,end) ).^2;
-    end
+    temp_avg = temp_tot ./ (N);
+    temp_var = temp_var ./ (N-1);
+    t  = temp_avg(:,1);
+    y_ = temp_avg(:,2:end);
+    
+    temp_std = sqrt(temp_var);
+    upper_y_ = data_bestCase_medParams(end-(2200-2014):end,end)+temp_std;
+    lower_y_ = data_bestCase_medParams(end-(2200-2014):end,end)-temp_std;
+    %plot(t, upper_y_)
+    %plot(t, lower_y_)
+    
 end
-temp_avg = temp_tot ./ (N);
-temp_var = temp_var ./ (N-1);
-t  = temp_avg(:,1);
-y_ = temp_avg(:,2:end);
-plot(t, data_bestCase_medParams(:,end))
+
+if ~doing_stats
+    temp_y_ = coupled_soc_esm(data);
+    t  = temp_y_(:,1);
+    y_ = temp_y_(:,2:end);
+end
+
+%plot(t, y_(:,end))
 hold on
+plot(data_bestCase_medParams(1:(2014-1750),1), data_1741_to_2014(:,end))
+plot(data_bestCase_medParams(:,1),data_bestCase_medParams(:,end))
+
 xlim([1900,2200])
 ylim([0,5])
 
-temp_std = sqrt(temp_var);
-upper_y_ = data_bestCase_medParams(:,end)+temp_std;
-lower_y_ = data_bestCase_medParams(:,end)-temp_std;
 plot(t, upper_y_)
 plot(t, lower_y_)
 
 % csvwrite('Sociodynamics/BestCase_medParams.csv', temp_avg)
 
 function results_dXdt = coupled_soc_esm(data)
+    global tinitial
+    global tfinal
     %%%%%%%%%%%%%%
     %%%% Parameter values
     %%%%%%%%%%%%%%
@@ -174,7 +202,8 @@ function results_dXdt = coupled_soc_esm(data)
     the initial value. 
     %}
     initial_conditions = [0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
-    tspan = 1751:1:2200;
+    % initial_conditions = [0.2197e3; 0.0606e3; 0.0776e3; 0.0394e3; 0.0010e3]
+    tspan = 1751:1:tfinal;
     opts = odeset('AbsTol',1e-7);
     [t, yprime_woSoc] = ode45(@(t, x_vec) syst_odes_woSoc(t, x_vec, parameters_given, data), tspan, initial_conditions);
 
@@ -188,8 +217,9 @@ function results_dXdt = coupled_soc_esm(data)
     the initial value. 
     %}
     x0 = 0.05; % (0.01, 0.05, 0.1 )
-    initial_conditions = [x0; 0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
-    tspan = 1751:1:2200;
+    %initial_conditions = [x0; 0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
+    initial_conditions = [0.0001e3; 0.2197e3; 0.0606e3; 0.0776e3; 0.0394e3; 0.0010e3];    
+    tspan = tinitial:1:tfinal;
 
     temp_history = [t, yprime_woSoc(:, 5)]; % grabs the temperature values from the comptuations that ignore social dynamics.
 

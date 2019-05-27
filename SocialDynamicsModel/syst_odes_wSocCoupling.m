@@ -97,6 +97,7 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
     
     %%%% Socio-dynamics model
     y1 = 0;
+    temp_x0_ = 0;
     if (temp_pred_ON == 1) && (t>2014)
         % use temperature solution at previous times to obtain a linear
         % prediction for a time horizon later
@@ -111,10 +112,13 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
         disp(t)
         temp_time = temp_time - 1751;
         %}
-        T_prev = interp1(temp_history(:,1), temp_history(:,2), t-t_p);
+        
+        %T_prev = interp1(temp_history(:,1), temp_history(:,2), t-t_p);
         %T_prev = temp_history(temp_time-t_p);
+        T_prev = temp_history;
         T_f   = T + (t_f./t_p).*(T - T_prev);
         f_T_f = cost_climate(T_f, f_max, omega, T_c);
+        temp_x0_ = x0;
         y1 = dXdt(x, f_T_f, kappa, beta, delta);
     end
     if (temp_pred_ON == 0) && (t>2014)
@@ -125,7 +129,7 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 
     %%% Carbon uptake/transport DEs
     
-    y2 = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon_T, x0);  % Atmospheric
+    y2 = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
     y3 = C_oc_dot(t, F_oc);  % Ocean
     y4 = C_veg_dot(t, P, R_veg, L_); % Vegetation
     y5 = C_so_dot(t, R_so, L_);  % Soil

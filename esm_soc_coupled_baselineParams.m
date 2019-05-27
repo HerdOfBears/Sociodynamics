@@ -17,7 +17,7 @@ data = csvread('Documents/prelim/global.1751_2014.csv');
 data = data(:,[1,2]); % The first two columns are: time, CO2 emissions
 data(:,2) = data(:,2)./1000; % Convert from MtC -> GtC
 %data(:,1) = data(:,1) - 1751;
-data_bestCase_medParams = csvread('./Sociodynamics/BestCase_medParams.csv');
+
 tinitial = 1751;
 tfinal   = 2014;
 
@@ -27,7 +27,7 @@ N = 2;
 temp_y_ = coupled_soc_esm(data);
 plot(temp_y_(:,1),temp_y_(:,end))
 
-%csvwrite('Sociodynamics/BestCase_BaselineParams.csv', temp_y_)
+% csvwrite('Sociodynamics/baselineParams_woSoc_1751to2014.csv', temp_y_)
 
 hold on
 xlim([1900,2200])
@@ -139,7 +139,7 @@ function results_dXdt = coupled_soc_esm(data)
     tspan = tinitial:1:tfinal;
     opts = odeset('AbsTol',1e-7);
     [t, yprime_woSoc] = ode45(@(t, x_vec) syst_odes_woSoc(t, x_vec, parameters_given, data), tspan, initial_conditions);
-
+    %results_dXdt = [t, yprime_woSoc];
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
     %%%%%%%%%%%%%%%%% WITH SOCIAL DYNAMICS COUPLING
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
