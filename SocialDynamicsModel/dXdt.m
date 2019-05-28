@@ -11,5 +11,5 @@ function dXdt_ = dXdt(x, f_T_f, kappa, beta, delta)
         delta = strength of social norms
     %}
     
-    dXdt_ = kappa .* x .* (1-x) .* ( -beta + f_T_f + delta.*(2.*x - 1) );
+    dXdt_ = kappa .* x .* (1-x) .* ( (-1).*beta + f_T_f + delta.*(2.*x - 1) );
 end

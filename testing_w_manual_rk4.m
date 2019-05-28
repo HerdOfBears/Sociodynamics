@@ -6,6 +6,9 @@ method correctly produces the piecewise sol'n 1751to2014 & 2014to2200
 %}
 %myode = @syst_odes_wSocCoupling;
 h = 0.1;  % Define Step Size
+addpath('./Sociodynamics/EarthSystemsModel');
+addpath('./Sociodynamics/SocialDynamicsModel');
+addpath('./Sociodynamics/data');
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,7 +17,7 @@ h = 0.1;  % Define Step Size
 
 initial_conditions = [0.0; 0.0; 0.0; 0.0; 0.0];%288.15];
 % initial_conditions = [0.2197e3; 0.0606e3; 0.0776e3; 0.0394e3; 0.0010e3]
-tspan = 1751:1:2014;
+tspan = 1800:1:2014;
 opts = odeset('AbsTol',1e-7);
 %[t, yprime_woSoc] = ode45(@(t, x_vec) syst_odes_woSoc(t, x_vec, parameters_given, data), tspan, initial_conditions);
 
@@ -24,40 +27,68 @@ rng('default');
 
 %initial_conditions = [0.0001e3; 0.2197e3; 0.0606e3; 0.0776e3; 0.0394e3; 0.0010e3];
 global data
-data = csvread('Documents/prelim/global.1751_2014.csv');
+%data = csvread('Documents/prelim/global.1751_2014.csv');
+data = csvread('Sociodynamics/data/co2TotalEmissions.csv');
 data = data(:,[1,2]); % The first two columns are: time, CO2 emissions
-data(:,2) = data(:,2)./1000; % Convert from MtC -> GtC
+data(:,2) = data(:,2); % Convert from MtC -> GtC
 
 data_1741_to_2014 = csvread('./Sociodynamics/baselineParams_woSoc_1751to2014.csv');
 temp_history = data_1741_to_2014(:,[1,end]);
 
 %initial_conditions = [0.05 ,data_1741_to_2014(end,2:end)];%[0.05; 0;0;0;0;0];
 %initial_conditions = [0.05; 0;0;0;0;0];
-test_1751to2014  = csvread('Sociodynamics/test_1751to2014.csv');
+%test_1751to2014  = csvread('Sociodynamics/test_1751to2014.csv');
+test_1751to2014  = csvread('Sociodynamics/blineParams_1800to2014.csv');
 initial_conditions  = test_1751to2014(end,2:end)'; %transposed
 t_final = 2200;
+
+
+
 tspan = 2014:0.1:t_final;
 y = zeros(numel(tspan),6);
 x0=0.05;
+initial_conditions(1) = x0;
 avg_ = 0;
 ssd_ = 0;
 %N=2;
 
+%%% Gets results for baseline parameters starting from 1800
+%{
+tspan = 1800:0.1:2014;
+initial_conditions = [0.0;0;0;0;0;0];
+parameters_baseline  = get_parameters(0);
+x0 = 0;%parameters_baseline(1);
+parameters_baseline = parameters_baseline(2:end);
+disp(x0)
+disp(parameters_baseline(1:6))
+wtf_is_happening = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_baseline, test_1751to2014, x0);
+wtf_is_happening = [tspan', wtf_is_happening];
+initial_conditions = wtf_is_happening(end, 2:end);
+return
+
+%}
+tspan = 2014:0.1:t_final;
+
 temperature_vals = 0;
 
 random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == baseline
-for N = [1000]
+for N = [100]
+    
+        
     disp('test:')
     disp(N)
     parameters_baseline  = get_parameters(0);
     x0 = parameters_baseline(1);
+    initial_conditions(1) = x0;
     parameters_baseline = parameters_baseline(2:end);
     
     bline_params_results = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_baseline, test_1751to2014, x0);
+    
     tic
     for idx_ = 1:1:N
         parameters_given = get_parameters(random_params_yes_no);
         x0 = parameters_given(1);
+        initial_conditions(1) = x0;
         parameters_given= parameters_given(2:end);
         
         results_ = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, test_1751to2014, x0);
@@ -84,11 +115,13 @@ hold on
 plot(tspan, avg_(:,end))
 xlim([1900,2200])
 ylim([0,5])
+size(temperature_vals)
 %plot(tspan, bline_params_results(:,end)+sqrt(ssd_(:,end)), '--')
 %plot(tspan, bline_params_results(:,end)-sqrt(ssd_(:,end)),'--')
 median_vals = quantile(temperature_vals', 0.5);
 bot_five    = quantile(temperature_vals', 0.05);
 top_five    = quantile(temperature_vals', 0.95);
+%plot(tspan, temperature_vals)
 plot(tspan, bline_params_results(:,end))
 plot(tspan, median_vals, 'LineWidth', 1.5)
 plot(tspan, top_five, '--')
@@ -134,6 +167,7 @@ function y = custom_RK4(odefun, tspan, y0, params_given, temp_history, x0)
         end
         if t(i)>2014 && t(i)<2024%i>t_p
             %disp(1000-i)
+            %size(temp_history)
             T_prev = temp_history(end - (100 - i),end);
             %T_prev = y(i-1000,end);
         end

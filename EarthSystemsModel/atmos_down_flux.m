@@ -20,6 +20,7 @@ function flux_down = atmos_down_flux(pCO2a, A, S, P_0, L, T, tao_CH4, T_0)
         tao = vertical opacity of the greenhouse atmosphere
     %}
     H = 0.5915;
+    %H = 0.5848;
     R = 8.314;
     
     tao_CO2 = 1.73 .* (pCO2a).^(0.263);
