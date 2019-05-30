@@ -67,12 +67,12 @@ initial_conditions = wtf_is_happening(end, 2:end);
 return
 
 %}
-tspan = 2014:0.1:t_final;
+tspan = 2014:0.001:t_final;
 
 temperature_vals = 0;
 
 random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == baseline
-for N = [100]
+for N = [150]
     
         
     disp('test:')
@@ -86,6 +86,7 @@ for N = [100]
     
     tic
     for idx_ = 1:1:N
+        disp(idx_)
         parameters_given = get_parameters(random_params_yes_no);
         x0 = parameters_given(1);
         initial_conditions(1) = x0;
@@ -123,9 +124,9 @@ bot_five    = quantile(temperature_vals', 0.05);
 top_five    = quantile(temperature_vals', 0.95);
 %plot(tspan, temperature_vals)
 plot(tspan, bline_params_results(:,end))
-plot(tspan, median_vals, 'LineWidth', 1.5)
-plot(tspan, top_five, '--')
-plot(tspan, bot_five, '--')
+plot(tspan, median_vals, 'LineWidth', 2)
+plot(tspan, top_five, '--', 'LineWidth', 1.5)
+plot(tspan, bot_five, '--', 'LineWidth', 1.5)
 %y(1,:) = initial_conditions;  % y0
 
 %{
@@ -168,11 +169,12 @@ function y = custom_RK4(odefun, tspan, y0, params_given, temp_history, x0)
         if t(i)>2014 && t(i)<2024%i>t_p
             %disp(1000-i)
             %size(temp_history)
-            T_prev = temp_history(end - (100 - i),end);
+            %T_prev = temp_history(end - (10000 - i),end);
+            T_prev = interp1(temp_history(:,1), temp_history(:,end), t(i)-10);
             %T_prev = y(i-1000,end);
         end
         if t(i)>2024
-            T_prev = y(i-100,end);
+            T_prev = y(i-10000,end);
         end
         k(1, :) = odefun(t(i), y(i,:), params_given, T_prev, x0);        
         k(2, :) = odefun(t(i) + (h/2), y(i,:) + (h/2)*k(1,:), params_given, T_prev, x0);        
@@ -184,7 +186,7 @@ function y = custom_RK4(odefun, tspan, y0, params_given, temp_history, x0)
         end
         %}
         if t(i)>2024
-            T_prev = y(i+1-100,end);
+            T_prev = y(i+1-10000,end);
         end
         k(4, :) = odefun(t(i) + h, y(i,:) + h*k(3,:), params_given, T_prev, x0);
 
