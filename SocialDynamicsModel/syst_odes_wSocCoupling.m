@@ -50,6 +50,10 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
     H = parameters_(22); % 0.5915; % relative humidity; calibrated
     A = parameters_(23); % 0.225; % surface albedo
     S = parameters_(24); % 1368; % solar flux
+    %disp('S = ')
+    %disp(S)
+    %disp('A = ')
+    %disp(A)
     
     tao_CH4 = parameters_(25); % 0.0231; % see: atmos_down_flux to resolve potential probs.
     P_0 = parameters_(26); % 1.4 .* 10^(11); % water vapor sat. const.
@@ -87,7 +91,7 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
     R_so  = soil_respiration(T, C_so, k_sr, k_B, T_0, C_so0);
     L_    = turnover(C_veg, k_t, C_veg0);
     F_oc  = ocean_flux(C_at, C_oc, F_0, chi, zeta, C_at0, C_oc0);
-    F_d   = atmos_down_flux(pCO2a, A, S, P_0, latent_heat, T, tao_CH4, T_0);
+    F_d   = atmos_down_flux(pCO2a, A, S, P_0, latent_heat, T, tao_CH4, T_0, H);
 
     epsilon_T = baseline_CO2_emis(t, eps_max, s_, data);
     

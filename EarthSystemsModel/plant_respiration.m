@@ -15,5 +15,7 @@ function resp_plant = plant_respiration(C_veg, T, k_r, k_A, E_a, T_0, C_veg0)
     R = 8.314;
     
     %resp_plant = k_r .* C_veg .* k_A .* exp( -(E_a)./(R.*(T)) );
-    resp_plant = k_r .* (C_veg+C_veg0) .* k_A .* exp( (-1).*(E_a)./(R.*(T+T_0)) );
+    %temp_y = (-1).*(E_a)./(R.*(T+T_0))
+    %resp_plant = k_r .* (C_veg+C_veg0) .* k_A .* exp( (-1).*(E_a)./(R.*(T+T_0)) );
+    resp_plant = k_r .* (C_veg+C_veg0) .* k_A .* (1./exp( (E_a)./(R.*(T+T_0)) ));
 end
