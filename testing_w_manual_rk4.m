@@ -72,7 +72,7 @@ tspan = 2014:0.01:t_final;
 temperature_vals = 0;
 
 random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == baseline
-for N = [500]
+for N = [100]
     
         
     disp('test:')
@@ -186,6 +186,7 @@ function y = custom_RK4(odefun, tspan, y0, params_given, temp_history, x0)
         end
         %}
         if t(i)>2024
+            disp('here')
             T_prev = y(i+1-1000,end);
         end
         k(4, :) = odefun(t(i) + h, y(i,:) + h*k(3,:), params_given, T_prev, x0);
