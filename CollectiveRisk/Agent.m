@@ -96,6 +96,9 @@ classdef Agent < handle
 			if gameResult == 2
 				% The group won, so they keep their remaining endowment and acquire payoff. 
 				obj.updatePayoff
+
+				% Give reward for winning collective-risk game; not usually done.
+				%obj.TotalEndowment = obj.TotalEndowment + 2;
 			end
 		end
 

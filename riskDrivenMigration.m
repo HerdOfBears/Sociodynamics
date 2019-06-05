@@ -77,7 +77,8 @@ function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, rand
 				% Updates endowment and tot. payoff.
 				for agent_idx = 1:numPlayers
 					player_i = players_{agent_idx};
-					player_i.updateEndowment(gameResult);
+					%player_i.updateEndowment(gameResult);
+					agent_x.updateEndowment(gameResult);
 					if player_i.isCooperator
 						num_c = num_c + 1;
 					end
@@ -134,6 +135,12 @@ function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, rand
 			overlayC = grid_arr.Cooperators;
 			timeSeries.Defectors{countSlides}   = overlayD;
 			timeSeries.Cooperators{countSlides} = overlayC;		
+
+			totU = getTotEndow(vecAgents);
+			timeSeries.U{countSlides} = totU;
+
+			incTotEndowment(vecAgents, 1);
+
 			countSlides = countSlides + 1;
 		end
 		%disp(strcat('num. of cooperators = ',num2str(n_c)) )
