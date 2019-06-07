@@ -156,3 +156,12 @@ function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, rand
 	resultsStruct.('TimeSeries')  = timeSeries;
 
 end
+
+%{
+
+Couple of ideas:
+
+Combine RL with agent-based modelling of the collective-risk social dilemma, similar to Joel Z. Leibo of DeepMind's papers; he has one doing this but for the collective pool social dilemma, not for collective-risk
+Right now, agent's play the collective-risk game with 1 ROUND. But in "The collective-risk social dilemma and the preventionof simulated dangerous climate change", the same group plays 10 rounds. 
+
+%}

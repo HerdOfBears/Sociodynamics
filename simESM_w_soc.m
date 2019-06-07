@@ -60,9 +60,9 @@ function finResults = simESM_w_soc(numSim, tspan)
 		disp('test:')
 		disp(N)
 		parameters_baseline  = get_parameters(0);
-		x0 = parameters_baseline(1);
+		x0 = parameters_baseline.x0;
 		initial_conditions(1) = x0;
-		parameters_baseline = parameters_baseline(2:end);
+		%parameters_baseline = parameters_baseline(2:end);
 		
 		bline_params_results = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_baseline, test_1751to2014, x0);
 		

@@ -3,7 +3,8 @@ function sensiAna()
 	parameters_ = params4SensiAna;
 
 	f_gtm = 8.3259 .* 10^(13); % conversion factor GtC -> C; pg. 1 of Thomas' SI
-
+	temp_pred_ON = 1;
+	
 	fldnames = fieldnames(parameters_);
 	len_fldnames = length(fldnames);
 
@@ -97,6 +98,79 @@ function sensiAna()
 				kappa = parameters_.kappa(indices.kappa); % social learning rate
 				beta  = parameters_.beta( indices.beta);  % net cost of being a mitigator
 				delta = parameters_.delta(indices.delta);  % strength of social norms
+
+
+				%%%%%%%%%%%%%%%%
+				%%% Functions
+				%%%%%%%%%%%%%%%%
+				
+				
+				%%%% Compute intermediates (resp. and photosynthesis etc.)
+				
+				pCO2a = mixingCO2a(C_at, C_at0, f_gtm, k_a);
+				
+				P     = photosynthesis(C_at, T, pCO2a, k_p, C_veg0, k_a, k_MM, k_c, k_M, T_0);
+				R_veg = plant_respiration(C_veg, T, k_r, k_A, E_a, T_0, C_veg0);
+				R_so  = soil_respiration(T, C_so, k_sr, k_B, T_0, C_so0);
+				L_    = turnover(C_veg, k_t, C_veg0);
+				F_oc  = ocean_flux(C_at, C_oc, F_0, chi, zeta, C_at0, C_oc0);
+				F_d   = atmos_down_flux(pCO2a, A, S, P_0, latent_heat, T, tao_CH4, T_0, H);
+
+				epsilon_T = baseline_CO2_emis(t, eps_max, s_, data);
+				
+				%%%%%%%%%%%%%%%%
+				%%%%% ODEs
+				%%%%%%%%%%%%%%%%
+				
+				%%%% Socio-dynamics model
+				y1 = 0;
+				temp_x0_ = 0;
+				if (temp_pred_ON == 1) && (t>2014)
+					% use temperature solution at previous times to obtain a linear
+					% prediction for a time horizon later
+					
+					%{
+					if (t - floor(t) < 0.5)
+						temp_time = floor(t);
+					end
+					if (ceil(t) - t < 0.5)
+						temp_time = ceil(t);
+					end
+					disp(t)
+					temp_time = temp_time - 1751;
+					%}
+					
+					%T_prev = interp1(temp_history(:,1), temp_history(:,2), t-t_p);
+					%T_prev = temp_history(temp_time-t_p);
+					T_prev = temp_history;
+					T_f   = T + (t_f./t_p).*(T - T_prev);
+					f_T_f = cost_climate(T_f, f_max, omega, T_c);
+					temp_x0_ = x0;
+					y1 = dXdt(x, f_T_f, kappa, beta, delta);
+				end
+				if (temp_pred_ON == 0) && (t>2014)
+					% Just use current temperature value
+					f_T_f = cost_climate(T, f_max, omega, T_c);
+					y1 = dXdt(x, f_T_f, kappa, beta, delta);
+				end
+
+				%%% Carbon uptake/transport DEs
+				
+				y2 = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
+				y3 = C_oc_dot(t, F_oc);  % Ocean
+				y4 = C_veg_dot(t, P, R_veg, L_); % Vegetation
+				y5 = C_so_dot(t, R_so, L_);  % Soil
+				
+				
+				%%% Temperature change
+				y6 = c_T_dot(t, F_d, T, c, T_0);
+
+				%%% RESULT
+				yprime = [y1; y2; y3; y4; y5; y6];
+
+
+
+
 			end
 
 
