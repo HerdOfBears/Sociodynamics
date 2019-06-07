@@ -1,4 +1,4 @@
-function y = custom_RK4(odefun, tspan, y0, h, params_given, temp_history, x0)
+function y = custom_RK4(odefun, tspan, y0, params_given, temp_history, x0)
 % ODEFUN contains the ode functions of the system
 % TSPAN  is a 1D vector of equally spaced t values
 % Y0     contains the intial conditions for the system variables
@@ -18,6 +18,8 @@ function y = custom_RK4(odefun, tspan, y0, h, params_given, temp_history, x0)
     
     t_p=10./h;
     
+    idx_p = round(t_p);
+
     % Iterate, computing each K value in turn, then the i+1 step values
     for i = 1:(N-1)
         T_prev=0;
@@ -25,12 +27,14 @@ function y = custom_RK4(odefun, tspan, y0, h, params_given, temp_history, x0)
             T_prev = interp1(temp_history(:,1), temp_history(:,end), t(i)); 
         end
         if t(i)>2014 && t(i)<2024%i>t_p
-            disp(1000-i)
-            T_prev = temp_history(end - (1000 - i),end);
+            %disp(1000-i)
+            %size(temp_history)
+            %T_prev = temp_history(end - (10000 - i),end);
+            T_prev = interp1(temp_history(:,1), temp_history(:,end), t(i)-10);
             %T_prev = y(i-1000,end);
         end
         if t(i)>2024
-            T_prev = y(i-1000,end);
+            T_prev = y(i-idx_p,end);
         end
         k(1, :) = odefun(t(i), y(i,:), params_given, T_prev, x0);        
         k(2, :) = odefun(t(i) + (h/2), y(i,:) + (h/2)*k(1,:), params_given, T_prev, x0);        
@@ -41,6 +45,9 @@ function y = custom_RK4(odefun, tspan, y0, h, params_given, temp_history, x0)
             T_prev = y(i+1-1000,end);
         end
         %}
+        if t(i)>2024
+            T_prev = y(i+1-idx_p,end);
+        end
         k(4, :) = odefun(t(i) + h, y(i,:) + h*k(3,:), params_given, T_prev, x0);
 
         y(i+1, :) = y(i, :) + (h/6)*sum(b.*k);    

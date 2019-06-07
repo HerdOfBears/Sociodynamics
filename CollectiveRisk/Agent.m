@@ -98,7 +98,7 @@ classdef Agent < handle
 				obj.updatePayoff
 
 				% Give reward for winning collective-risk game; not usually done.
-				%obj.TotalEndowment = obj.TotalEndowment + 2;
+				obj.TotalEndowment = obj.TotalEndowment + 1;
 			end
 		end
 

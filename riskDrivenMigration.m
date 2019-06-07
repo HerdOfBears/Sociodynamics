@@ -139,7 +139,7 @@ function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, rand
 			totU = getTotEndow(vecAgents);
 			timeSeries.U{countSlides} = totU;
 
-			incTotEndowment(vecAgents, 1);
+			%incTotEndowment(vecAgents, 1);
 
 			countSlides = countSlides + 1;
 		end
