@@ -11,7 +11,7 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 	T      = x_vec(6);
 
 	%%% Initial conditions (non-deviation initials):
-	x0 = parameters_.x0
+	x0 = parameters_.x0;
 	C_at0 = parameters_.C_at0; %596; 
 	C_oc0 = parameters_.C_oc0; %1.5.*10^(5);% % this can't be zero, otherwise we are dividing by zero
 	C_veg0 = parameters_.C_veg0; %550;
