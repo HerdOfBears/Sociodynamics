@@ -9,11 +9,11 @@ function parameters =  performSensiAna()
 
 		temp_ = struct();
 
-		temp_.kappa = 0.2;
-		temp_.delta = 0.5;
-		temp_.beta  = 0.5;
+		temp_.kappa = [0.02, 0.05, 0.2];
+		temp_.delta = [0.5, 1, 1.5];
+		temp_.beta  = [0.5, 1, 1.5];
 		temp_.k_MM  = 1.478;
-		temp_.s_    = 50;
+		temp_.s_    = [30, 50, 70];
 		temp_.k_A   = 8.7039.*10^(9);
 		temp_.k_B   = 157.072;
 		temp_.f_gtm = 8.3259 .* 10^(13); % conversion factor GtC -> C; pg. 1 of Thomas' SI
@@ -42,18 +42,19 @@ function parameters =  performSensiAna()
 
 		% 6
 		%%% Photosynthesis params.
-		temp_.k_p   = [0.9*0.184, 0.184, 1.1*0.184];
+		% temp_.k_p   = [0.9*0.184, 0.184, 1.1*0.184];
+		temp_.k_p   = [0.1748, 0.184, 0.1932];
 
 		%pdk_MM = makedist('Triangular', 'a', 0.9*1.478, 'b', 1.478, 'c', 1.1*1.478);
 		%k_MM = 1.478;%;%random(pdk_MM, 1,1); 
 
 		% 7
 		%k_c = 29e-6;
-		temp_.k_c   = [0.9*29e-6, 29e-6, 1.1*29e-6];
+		temp_.k_c   = [0.0000261, 29e-6, 0.0000319];
 
 		% 8
 		%k_M = 120e-6;
-		temp_.k_M   = [0.9*120e-6, 120e-6, 1.1*120e-6];
+		temp_.k_M   = [0.000108, 120e-6, 0.000132];
 
 		% 9
 		temp_.k_a  = 1.773.*10^(20); % mole vol. of atmos 
@@ -75,7 +76,7 @@ function parameters =  performSensiAna()
 		% 12
 		%%% Soil resp. params:
 		%k_sr = 0.034;
-		temp_.k_sr = [0.9*0.034, 0.0337, 1.1*0.034];
+		temp_.k_sr = [0.03033, 0.0337, 0.03707];
 
 		%pdk_B = makedist('Triangular', 'a', 0.9*157.072, 'b', 157.072, 'c', 1.1*157.072);
 		%k_B  = 157.072;%;%random(pdk_B, 1, 1); %
@@ -104,17 +105,17 @@ function parameters =  performSensiAna()
 
 		% 21
 		%A = 0.225;
-		temp_.A = [0.9*0.225, 0.225, 1.1*0.225];
+		temp_.A = [0.2025, 0.225, 0.2475];
 
 		% 22 Solar flux
 		%S = 1368;
-		temp_.S = [0.9*1368, 1368, 1.1*1368];
+		temp_.S = [1231.2, 1368, 1504.8];
 
 		%tao_CH4 = 0.0231;
-		temp_.tao_CH4 = [0.9*0.0231, 0.0231, 1.1*0.0231];
+		temp_.tao_CH4 = [0.02079, 0.0231, 0.02541];
 
 		%P_0 = 1.4e11;
-		temp_.P_0   = [0.95*1.4e11, 1.4e11, 1.05*1.4e11];
+		temp_.P_0   = [1.26e11, 1.4e11, 1.54e11];
 
 		%F_0 = 2.5e-2;
 		temp_.F_0   = [2.25e-2, 2.5e-2, 2.75e-2];

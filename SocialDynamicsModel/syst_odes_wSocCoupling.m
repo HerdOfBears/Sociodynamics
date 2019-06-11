@@ -11,18 +11,18 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 	T      = x_vec(6);
 
 	%%% Initial conditions (non-deviation initials):
-	x0 = parameters_.x0;
-	C_at0 = parameters_.C_at0; %596; 
-	C_oc0 = parameters_.C_oc0; %1.5.*10^(5);% % this can't be zero, otherwise we are dividing by zero
+	x0     = parameters_.x0;
+	C_at0  = parameters_.C_at0; %596; 
+	C_oc0  = parameters_.C_oc0; %1.5.*10^(5);% % this can't be zero, otherwise we are dividing by zero
 	C_veg0 = parameters_.C_veg0; %550;
-	C_so0 = parameters_.C_so0; %1500;
-	T_0 = parameters_.T_0; %288.15;
+	C_so0  = parameters_.C_so0; %1500;
+	T_0    = parameters_.T_0; %288.15;
 
 	%%% Photosynthesis params.
-	k_p = parameters_.k_p; %0.184;
+	k_p  = parameters_.k_p; %0.184;
 	k_MM = parameters_.k_MM; %1.478;
-	k_c = parameters_.k_c; %29.* 10^(-6);
-	k_M = parameters_.k_M; %120.* 10^(-6);
+	k_c  = parameters_.k_c; %29.* 10^(-6);
+	k_M  = parameters_.k_M; %120.* 10^(-6);
 	
 	k_a = parameters_.k_a; %1.773.*10^(20); % mole vol. of atmos
 	
@@ -34,7 +34,7 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 	
 	%%% Soil resp. params:
 	k_sr = parameters_.k_sr; %0.034; % soil resp. rate const.
-	k_B = parameters_.k_B; %157.072;
+	k_B  = parameters_.k_B; %157.072;
 	
 	%%%% Turnover params:
 	k_t = parameters_.k_t; %0.092;
@@ -100,9 +100,9 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 	%%%%%%%%%%%%%%%%
 	
 	%%%% Socio-dynamics model
-	y1 = 0;
+	%y1 = 0;
 	temp_x0_ = 0;
-	if (temp_pred_ON == 1) && (t>2014)
+	if (temp_pred_ON == 1) && (t>=2014)
 		% use temperature solution at previous times to obtain a linear
 		% prediction for a time horizon later
 		
@@ -130,9 +130,10 @@ function yprime = syst_odes_wSocCoupling(t, x_vec, parameters_, temp_history, x0
 		f_T_f = cost_climate(T, f_max, omega, T_c);
 		y1 = dXdt(x, f_T_f, kappa, beta, delta);
 	end
-
+	if (t<2014)
+		y1 =0;
+	end
 	%%% Carbon uptake/transport DEs
-	
 	y2 = C_at_dot(t, x, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
 	y3 = C_oc_dot(t, F_oc);  % Ocean
 	y4 = C_veg_dot(t, P, R_veg, L_); % Vegetation

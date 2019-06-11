@@ -13,6 +13,8 @@ classdef Agent < handle
 		Position = struct();
 		TotalEndowment;
 		Kappa;
+
+		altruism = unifrnd(0,1);
 	end
 
 	methods 
@@ -98,7 +100,8 @@ classdef Agent < handle
 				obj.updatePayoff
 
 				% Give reward for winning collective-risk game; not usually done.
-				obj.TotalEndowment = obj.TotalEndowment + 1;
+				% obj.TotalEndowment = obj.TotalEndowment + 1;
+				
 			end
 		end
 
@@ -110,6 +113,14 @@ classdef Agent < handle
 		function updatePosition(obj, newPos)
 			obj.Position.x = newPos(2);
 			obj.Position.y = newPos(1); 
+		end
+
+		function giveAmount_ = decideGiveAmount(obj, Prisk)
+			% Prisk : perceived risk
+
+			altruism = obj.altruism;
+			y = altruism .* Prisk; % linear function of Prisk
+			giveAmount_ = y;
 		end
 	end
 end

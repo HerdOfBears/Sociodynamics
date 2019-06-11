@@ -1,5 +1,9 @@
 function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, randomNumbers, vecAgents, parameters, initial_positions)
 
+	multiRoundYesNo = 1; % 1 : Yes; 0 : No
+	if multiRoundYesNo
+		disp('Playing multi-round collective risk social dilemma');
+	end
 	% Returns a structure of results. Each one has a different fieldname. 
 
 	kappa  = parameters(1); 
@@ -72,8 +76,15 @@ function resultsStruct = riskDrivenMigration(tspan, MCsteps, intlEndowment, rand
 			end
 			if numPlayers > 1
 				% if there are peeps. other than self, play game. 
-				gameResult = playCollectiveRiskGame(players_, alpha_, c, beta_);
 				
+				% Are we playing a collective risk game with multiple rounds or no?
+				if multiRoundYesNo
+					gameResult = playMultiRoundCollectiveRiskGame(players_, alpha_, c, beta_);
+				end
+				if ~multiRoundYesNo
+					gameResult = playCollectiveRiskGame(players_, alpha_, c, beta_);
+				end
+
 				% Updates endowment and tot. payoff.
 				for agent_idx = 1:numPlayers
 					player_i = players_{agent_idx};

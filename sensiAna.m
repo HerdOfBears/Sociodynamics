@@ -24,12 +24,12 @@ function Results = sensiAna()
 	data(:,2) = data(:,2); % Convert from MtC -> GtC
 
 
-	test_1751to2014  = csvread('Sociodynamics/blineParams_1800to2014.csv');
+	test_1751to2014  = csvread('Sociodynamics/data/blineParams_1800to2014.csv');
 	initial_conditions  = test_1751to2014(end,2:end)'; %transposed
 	t_final = 2200;
-	t_final = 2600;
+	t_final = 2614;
 
-	tspan = 2014:1:t_final;
+	tspan = 2014:0.1:t_final;
 	y = zeros(numel(tspan),6);
 
 	all_results = struct();
@@ -73,8 +73,11 @@ function Results = sensiAna()
 				end
 				paramsVaried.(temp_fldname) = [paramsVaried.(temp_fldname), parameters_.(temp_fldname)( indices.(temp_fldname) )];
 
+				tao_co2 = 1.73.*(mixingCO2a(0, parameters2give.C_at0, parameters2give.f_gtm, parameters2give.k_a)).^0.263;
+				parameters2give.H = calibrate_humidity(parameters2give.P_0, parameters2give.latent_heat, parameters2give.A, parameters2give.S, parameters2give.tao_CH4, tao_co2);
+
 				x0 = parameters2give.x0;
-				initial_conditions(1) = x0;
+				initial_conditions(1) = 0.05;%x0;
 				%parameters_baseline = parameters_baseline(2:end);
 				
 				integrated_ = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters2give, test_1751to2014, x0);
