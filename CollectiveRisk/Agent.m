@@ -101,7 +101,7 @@ classdef Agent < handle
 
 				% Give reward for winning collective-risk game; not usually done.
 				% obj.TotalEndowment = obj.TotalEndowment + 1;
-				
+
 			end
 		end
 
@@ -119,7 +119,7 @@ classdef Agent < handle
 			% Prisk : perceived risk
 
 			altruism = obj.altruism;
-			y = altruism .* Prisk; % linear function of Prisk
+			y = altruism .* Prisk + 0.5; % linear function of Prisk
 			giveAmount_ = y;
 		end
 	end
