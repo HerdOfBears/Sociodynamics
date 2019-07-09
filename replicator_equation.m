@@ -1,4 +1,4 @@
-function replicator_equation(proportions, meeting_rates, fitnesses, homophily)
+function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily)
     %{
     
     proportions : array of values for the current 
@@ -22,7 +22,7 @@ function replicator_equation(proportions, meeting_rates, fitnesses, homophily)
         
         % Update from same subpopulation
         for j = 1:1:num_strats
-            if i != j
+            if i ~= j
                 nu_ij = meeting_rates(i);
                 y = proportions(i,j); 
                 fitness_i1 = fitnesses(i,1);
@@ -34,7 +34,9 @@ function replicator_equation(proportions, meeting_rates, fitnesses, homophily)
         % Update from other subpops.
         temp_subpop_contr = 0;
         for b = 1:1:num_subpops
-            if b != i
+
+            % Ensure we don't redo the above loop
+            if b ~= i
                 for j = 1:1:num_strats
                     nu_ib = meeting_rates(b);
                     P_b1 = proportions(b, 1); 
@@ -55,6 +57,9 @@ function replicator_equation(proportions, meeting_rates, fitnesses, homophily)
             end
         end
         
+        % Include the contribution to dPdt from other subpopulations.
+        % When homophily is 1, there will be no contribution from other
+        % subpopulations
         tot_change(i) = tot_change(i) + (1-h).*temp_subpop_contr;
     end
     % End of updating subpop i
@@ -62,6 +67,7 @@ function replicator_equation(proportions, meeting_rates, fitnesses, homophily)
     if num_strats == 2
         
     end
-    
+
+    dPdt = tot_change;
     
 end
