@@ -161,7 +161,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		y2 =0;
 	end
 	%%% Carbon uptake/transport DEs
-	y3 = C_at_dot(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
+	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
 	y4 = C_oc_dot(t, F_oc);  % Ocean
 	y5 = C_veg_dot(t, P, R_veg, L_); % Vegetation
 	y6 = C_so_dot(t, R_so, L_);  % Soil
