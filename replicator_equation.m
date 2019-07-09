@@ -5,9 +5,14 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
             proportion of the total population that each subpop.
             constitutes.
             Each column is a strategy. Each row is a subpop.
+
     meeting_rates : array of constants denoting the rate a given subpop.
             meets some other subpop.
+    
     fitnesses : array of fitnesses of each strategy in a subpop. 
+                rows are subpops. First poor, then rich. 
+                cols are strats.  First mitigative, then non-mitigative. 
+    
     homophily : array of homophily parameters, determining how willing
             each subpop. is to listen to other subpops.
     %}

@@ -135,8 +135,12 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		%T_prev = interp1(temp_history(:,1), temp_history(:,2), t-t_p);
 		%T_prev = temp_history(temp_time-t_p);
 		T_prev = temp_history;
-		T_f   = T + (t_f./t_p).*(T - T_prev);
-		f_T_f = cost_climate(T_f, f_max, omega, T_c);
+		T_f   = T + (t_f./t_p).*(T - T_prev); % Each subpop. 'forecasts' temperature in the same linear way.
+		% f_T_f = cost_climate(T_f, f_max, omega, T_c);
+		
+		% Get the payoffs for each subpop. and strategy.
+		fitnesses = compute_payoffs(proportions, parameters_, T, T_f);
+
 		temp_x0_ = [xP0, xR0];
 		dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily);
 		y1 = dPdt(1); % poor
