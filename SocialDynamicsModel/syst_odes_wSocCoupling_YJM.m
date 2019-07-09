@@ -137,7 +137,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		T_prev = temp_history;
 		T_f   = T + (t_f./t_p).*(T - T_prev); % Each subpop. 'forecasts' temperature in the same linear way.
 		% f_T_f = cost_climate(T_f, f_max, omega, T_c);
-		
+
 		% Get the payoffs for each subpop. and strategy.
 		fitnesses = compute_payoffs(proportions, parameters_, T, T_f);
 
@@ -147,8 +147,11 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		y2 = dPdt(2); % rich 
 	end
 	if (temp_pred_ON == 0) && (t>2014)
-		% Just use current temperature value
-		f_T_f = cost_climate(T, f_max, omega, T_c);
+		% Just use the current temperature value, not the future projection T_f
+		% Get the payoffs for each subpop. and strategy.
+		fitnesses = compute_payoffs(proportions, parameters_, T, T);
+
+		temp_x0_ = [xP0, xR0];
 		dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily);
 		y1 = dPdt(1); % poor
 		y2 = dPdt(2); % rich 
@@ -168,5 +171,5 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	y7 = c_T_dot(t, F_d, T, c, T_0);
 
 	%%% RESULT
-	yprime = [y1; y2; y3; y4; y5; y6];
+	yprime = [y1; y2; y3; y4; y5; y6; y7];
 end

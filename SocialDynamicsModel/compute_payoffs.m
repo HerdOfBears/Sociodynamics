@@ -16,6 +16,12 @@ function fitnesses = compute_payoffs(proportions, parameters_, T, T_f)
 	alpha_R0 = parameters_.alpha_R0;
 	delta    = parameters_.delta;
 	prop_R0  = parameters_.prop_R0;
+	
+	k_R = parameters_.k_R;
+	c_R = parameters_.c_R;
+	k_P = parameters_.k_P;
+	c_P = parameters_.c_P;
+
 
 	% Baseline per-capita income for rich and poor
 	omega_R = parameters_.omega_R;

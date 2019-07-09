@@ -70,7 +70,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 		% initial_conditions(1) = x0;
 		%parameters_baseline = parameters_baseline(2:end);
 		
-		bline_params_results = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_baseline, test_1751to2014, xP0, xR0);
+		bline_params_results = custom_RK4(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, xP0, xR0);
 		
 		tic
 		for idx_ = 1:1:N
@@ -80,23 +80,25 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 			initial_conditions(1) = x0;
 			parameters_given= parameters_given(2:end);
 			
-			results_ = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, test_1751to2014, x0);
+			results_ = custom_RK4(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, xP0, xR0);
 			avg_ = avg_ + results_(:,2:end);
 			if idx_==1
-				all_results.xvals = [results_(:,1)];
-				all_results.catm  = [results_(:,2)];
-				all_results.coc   = [results_(:,3)];
-				all_results.cveg  = [results_(:,4)];
-				all_results.cso   = [results_(:,5)];
-				all_results.T     = [results_(:,6)];
+				all_results.xPvals = [results_(:,1)];
+				all_results.xRvals = [results_(:,2)];				
+				all_results.catm   = [results_(:,3)];
+				all_results.coc    = [results_(:,4)];
+				all_results.cveg   = [results_(:,5)];
+				all_results.cso    = [results_(:,6)];
+				all_results.T      = [results_(:,7)];
 			end
 			if idx_>1
-				all_results.xvals = [all_results.xvals, results_(:,1)];
-				all_results.catm  = [all_results.catm,  results_(:,2)];
-				all_results.coc   = [all_results.coc,   results_(:,3)];
-				all_results.cveg  = [all_results.cveg,  results_(:,4)];
-				all_results.cso   = [all_results.cso,   results_(:,5)];
-				all_results.T     = [all_results.T,     results_(:,6)];			
+				all_results.xPvals = [all_results.xPvals, results_(:,1)];
+				all_results.xRvals = [all_results.xRvals, results_(:,2)];				
+				all_results.catm   = [all_results.catm,   results_(:,3)];
+				all_results.coc    = [all_results.coc,    results_(:,4)];
+				all_results.cveg   = [all_results.cveg,   results_(:,5)];
+				all_results.cso    = [all_results.cso,    results_(:,6)];
+				all_results.T      = [all_results.T,      results_(:,7)];			
 			end
 		end
 		avg_ = avg_./N;

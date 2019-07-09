@@ -27,13 +27,29 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	parameters_given.homophily = 0;
 
 	parameters_given.kappa = 0.2;
-	parameters_given.delta = 0.5;
+	parameters_given.delta = 0.5; % Controls how strong the restoring force is for a strategy proportional to the number of people (social) with that strategy
 	parameters_given.beta  = 0.5;
 	parameters_given.k_MM  = 1.478;
 	parameters_given.s_    = 50;
 	parameters_given.k_A   = 8.7039.*10^(9);
 	parameters_given.k_B   = 157.072;
 	parameters_given.f_gtm = 8.3259 .* 10^(13); % conversion factor GtC -> C; pg. 1 of Thomas' SI    
+
+	%%%% Parameters used in computing payoffs:
+	parameters_given.alpha_P0 = 2.5; % 
+	parameters_given.alpha_P1 = 2.5; % Controls the cost of mitigative behaviour when there is no dissatisfaction
+	parameters_given.alpha_R0 = 2.0; % Cost of mitigative behaviour for rich subpop.
+
+	% Baseline per-capita income for rich and poor
+	% Assume 20% of pop. is rich and the rich pop. holds 45% of tot. income
+	parameters_given.omega_R = 3.272727; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
+	parameters_given.omega_P = 1.0;
+
+	% how quickly income decreases with large temperature deviations
+	parameters_given.k_R = 0.5; 
+	parameters_given.c_R = 1.0;
+	parameters_given.k_P = 2.0;
+	parameters_given.c_P = 2.0;
 
 	if ~random_yes_no
 		%%%%%%%%%%%%%%
