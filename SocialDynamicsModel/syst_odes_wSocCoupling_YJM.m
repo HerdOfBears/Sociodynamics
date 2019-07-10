@@ -159,7 +159,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	if (t<2014)
 		y1 =0;
 		y2 =0;
-	end
+	end 
 	%%% Carbon uptake/transport DEs
 	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
 	y4 = C_oc_dot(t, F_oc);  % Ocean
