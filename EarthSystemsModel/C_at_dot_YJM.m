@@ -1,4 +1,4 @@
-function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, temp_x0_)
+function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, temp_x0_, prop_R0, In_P, In_R)
 	% Time rate of change for C_at
 	%{
 	Variables:
@@ -11,6 +11,7 @@ function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, t
 		F_oc    = Flux of CO2 from atmos. to ocean
 		epsilon = baseline CO2 emissions
 	%}
+
 	xP = proportions(1,1);
 	xR = proportions(2,1);
 

@@ -20,7 +20,7 @@ function finResults = simESM_w_soc(numSim, tspan)
 	data(:,2) = data(:,2); % Convert from MtC -> GtC
 
 
-	test_1751to2014  = csvread('Sociodynamics/blineParams_1800to2014.csv');
+	test_1751to2014  = csvread('Sociodynamics/data/blineParams_1800to2014.csv');
 	initial_conditions  = test_1751to2014(end,2:end)'; %transposed
 	t_final = 2200;
 
@@ -71,9 +71,10 @@ function finResults = simESM_w_soc(numSim, tspan)
 		for idx_ = 1:1:N
 			disp(idx_)
 			parameters_given = get_parameters(random_params_yes_no);
-			x0 = parameters_given(1);
+			% x0 = parameters_given(1);
+			x0 = parameters_baseline.x0;			
 			initial_conditions(1) = x0;
-			parameters_given= parameters_given(2:end);
+			%parameters_given= parameters_given(2:end);
 			
 			results_ = custom_RK4(@syst_odes_wSocCoupling, tspan, initial_conditions, parameters_given, test_1751to2014, x0);
 			avg_ = avg_ + results_(:,2:end);

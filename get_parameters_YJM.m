@@ -19,12 +19,13 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	if random_yes_no
 		pdpropR = makedist('Triangular', 'a', 0.05, 'b', 0.2, 'c', 0.35);
 		parameters_given.prop_R0 = random(pdpropR, 1,1);
+	end
 
 	% Gets the proportion of the subpops' respective initial amounts
 	parameters_given.xP0   = 0.05 .* (1 - parameters_given.prop_R0);
 	parameters_given.xR0   = 0.05 .* parameters_given.prop_R0;
 	
-	parameters_given.homophily = 0;
+	parameters_given.homophily = 1;
 
 	parameters_given.kappa = 0.2;
 	parameters_given.delta = 0.5; % Controls how strong the restoring force is for a strategy proportional to the number of people (social) with that strategy
@@ -36,9 +37,9 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	parameters_given.f_gtm = 8.3259 .* 10^(13); % conversion factor GtC -> C; pg. 1 of Thomas' SI    
 
 	%%%% Parameters used in computing payoffs:
-	parameters_given.alpha_P0 = 2.5; % 
-	parameters_given.alpha_P1 = 2.5; % Controls the cost of mitigative behaviour when there is no dissatisfaction
-	parameters_given.alpha_R0 = 2.0; % Cost of mitigative behaviour for rich subpop.
+	parameters_given.alpha_P0 = 1.5; % 
+	parameters_given.alpha_P1 = 1.5; % Controls the cost of mitigative behaviour when there is no dissatisfaction
+	parameters_given.alpha_R0 = 1.0; % Cost of mitigative behaviour for rich subpop.
 
 	% Baseline per-capita income for rich and poor
 	% Assume 20% of pop. is rich and the rich pop. holds 45% of tot. income
@@ -110,7 +111,17 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		parameters_given.chi     = 0.3;% (0.2, 0.3, 0.4) characteristic CO2 solubility
 		parameters_given.zeta    = 50;% (40, 50, 60) "evasion factor"
 
+		C_at0 = parameters_given.C_at0;
+		f_gtm = parameters_given.f_gtm;
+		k_a   = parameters_given.k_a;
+		P_0   = parameters_given.P_0;
+		latent_heat = parameters_given.latent_heat;
+		A = parameters_given.A;
+		S = parameters_given.S;
+		tao_CH4 = parameters_given.tao_CH4;
+
 		parameters_given.tao_co2 = 1.73.*(mixingCO2a(0, C_at0, f_gtm, k_a)).^0.263;
+		tao_co2 = parameters_given.tao_co2; 
 		parameters_given.H = calibrate_humidity(P_0, latent_heat, A, S, tao_CH4, tao_co2);
 
 		parameters_given.f_max = 6; % (4,5,6) max of warming cost function f(T)

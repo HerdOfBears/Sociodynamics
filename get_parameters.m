@@ -79,7 +79,17 @@ function parameters_ = get_parameters(random_yes_no)
 		parameters_given.chi     = 0.3;% (0.2, 0.3, 0.4) characteristic CO2 solubility
 		parameters_given.zeta    = 50;% (40, 50, 60) "evasion factor"
 
+		C_at0 = parameters_given.C_at0;
+		f_gtm = parameters_given.f_gtm;
+		k_a   = parameters_given.k_a;
+		P_0   = parameters_given.P_0;
+		latent_heat = parameters_given.latent_heat;
+		A = parameters_given.A;
+		S = parameters_given.S;
+		tao_CH4 = parameters_given.tao_CH4;
+		
 		parameters_given.tao_co2 = 1.73.*(mixingCO2a(0, C_at0, f_gtm, k_a)).^0.263;
+		tao_co2 = parameters_given.tao_co2;
 		parameters_given.H = calibrate_humidity(P_0, latent_heat, A, S, tao_CH4, tao_co2);
 
 		parameters_given.f_max = 6; % (4,5,6) max of warming cost function f(T)
@@ -101,7 +111,7 @@ function parameters_ = get_parameters(random_yes_no)
 		%%%%%%%%%%%%%%
 		%%%% Parameter values
 		%%%%%%%%%%%%%%
-		parameters_given = [];
+		%parameters_given = [];
 
 		pdx_0 = makedist('Triangular', 'a', 0.01, 'b', 0.05, 'c', 0.1);
 		%x_0 = 0.05;%;%random(pdx_0, 1,1);
@@ -257,6 +267,19 @@ function parameters_ = get_parameters(random_yes_no)
 
 		pdeps_max = makedist('Triangular', 'a', 4.2, 'b', 7, 'c', 9.8);
 		parameters_given.eps_max   = 7;%random(pdeps_max,1,1); % (4.2, 7, 9.8) max change in epsilon(t) from 2014
+
+		C_at0 = parameters_given.C_at0;
+		f_gtm = parameters_given.f_gtm;
+		k_a   = parameters_given.k_a;
+		P_0   = parameters_given.P_0;
+		latent_heat = parameters_given.latent_heat;
+		A = parameters_given.A;
+		S = parameters_given.S;
+		tao_CH4 = parameters_given.tao_CH4;
+		
+		parameters_given.tao_co2 = 1.73.*(mixingCO2a(0, C_at0, f_gtm, k_a)).^0.263;
+		tao_co2 = parameters_given.tao_co2;
+		parameters_given.H = calibrate_humidity(P_0, latent_heat, A, S, tao_CH4, tao_co2);
 
 		%pdkappa = makedist('Triangular', 'a', 0.02, 'b', 0.05, 'c', 0.2);
 		%kappa = 0.05;%;%random(pdkappa, 1,1);    % (0.02, 0.05, 0.2) social learning rate

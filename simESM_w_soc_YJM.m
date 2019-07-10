@@ -22,7 +22,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 	data(:,2) = data(:,2); % Convert from MtC -> GtC
 
 
-	test_1751to2014  = csvread('Sociodynamics/blineParams_1800to2014.csv');
+	test_1751to2014  = csvread('Sociodynamics/data/blineParams_1800to2014.csv');
 	initial_conditions  = test_1751to2014(end,2:end)'; %transposed
 	t_final = 2200;
 
@@ -61,26 +61,34 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 			
 		disp('test:')
 		disp(N)
-		parameters_baseline  = get_parameters(0);
+		parameters_baseline  = get_parameters_YJM(0);
 		xP0 = parameters_baseline.xP0;
 		xR0 = parameters_baseline.xR0;
+		vec_proportions = [xP0, xR0];
 
-		initial_conditions(1) = xP0;%0.05;
-		initial_conditions(2) = xR0;	
+		% initial_conditions(1) = xP0;%0.05;
+		% initial_conditions(2) = xR0;
+		initial_conditions = [xP0; xR0; initial_conditions(2:end, 1)];
+		size(initial_conditions)
 		% initial_conditions(1) = x0;
 		%parameters_baseline = parameters_baseline(2:end);
 		
-		bline_params_results = custom_RK4(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, xP0, xR0);
+		bline_params_results = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, vec_proportions);
 		
 		tic
 		for idx_ = 1:1:N
 			disp(idx_)
-			parameters_given = get_parameters(random_params_yes_no);
-			x0 = parameters_given(1);
-			initial_conditions(1) = x0;
-			parameters_given= parameters_given(2:end);
+			parameters_given = get_parameters_YJM(random_params_yes_no);
+			xP0 = parameters_baseline.xP0;
+			xR0 = parameters_baseline.xR0;
+			vec_proportions = [xP0, xR0];
+
+			initial_conditions(1) = xP0;
+			initial_conditions(2) = xR0;			
+			size(initial_conditions)
+			%parameters_given= parameters_given(2:end);
 			
-			results_ = custom_RK4(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, xP0, xR0);
+			results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, vec_proportions);
 			avg_ = avg_ + results_(:,2:end);
 			if idx_==1
 				all_results.xPvals = [results_(:,1)];

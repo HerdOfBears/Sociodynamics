@@ -32,7 +32,8 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 				y = proportions(i,j); 
 				fitness_i1 = fitnesses(i,1);
 				fitness_ij = fitnesses(i,j);
-				tot_change(i) = tot_change(i) + nu_ij.*x.*y.*(fitness_i1 - fitness_ij);
+
+				tot_change(i) = nu_ij.*x.*y.*(fitness_i1 - fitness_ij);
 			end
 		end
 		
@@ -52,7 +53,7 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 					fitness_b1 = fitnesses(b, 1);
 					fitness_aj = fitnesses(i, j);
 					fitness_bj = fitnesses(b, j);
-					fitness_a1 = fitnesses(a, 1); 
+					fitness_a1 = fitnesses(i, 1); 
 					
 					gain_ = P_b1 .* P_aj .* max( [fitness_b1 - fitness_aj, 0] );
 					loss_ = P_bj .* P_a1 .* max( [fitness_bj - fitness_a1, 0] );
@@ -72,7 +73,10 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 	if num_strats == 2
 		
 	end
-
+	disp("nu = " + num2str(meeting_rates))
+	disp("proportions  = " + num2str(proportions))
+	disp(tot_change)
 	dPdt = tot_change;
+
 	
 end

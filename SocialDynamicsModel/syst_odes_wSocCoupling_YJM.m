@@ -107,10 +107,18 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	temp_x0_ = 0;
 	%%% Create proportions array
 	prop_R0 = parameters_.prop_R0;
-	proportions(1,1) = xP0;
-	proportions(1,2) = (1-prop_R0)-xP0;
-	proportions(2,1) = xR0;
-	proportions(2,2) = prop_R0-xR0;
+	% proportions(1,1) = xP0;
+	% proportions(1,2) = (1-prop_R0)-xP0;
+	% proportions(2,1) = xR0;
+	% proportions(2,2) = prop_R0-xR0;
+
+	proportions(1,1) = xP;
+	proportions(1,2) = (1-prop_R0)-xP;
+	proportions(2,1) = xR;
+	proportions(2,2) = prop_R0-xR;
+
+
+	%disp("xP xR = " + num2str(xP) + " " + num2str(xR))
 
 	if (temp_pred_ON == 1) && (t>=2014)
 		% use temperature solution at previous times to obtain a linear
@@ -138,8 +146,27 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		T_f   = T + (t_f./t_p).*(T - T_prev); % Each subpop. 'forecasts' temperature in the same linear way.
 		% f_T_f = cost_climate(T_f, f_max, omega, T_c);
 
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		% Get the payoffs for each subpop. and strategy.
-		fitnesses = compute_payoffs(proportions, parameters_, T, T_f);
+		% Once temperature (T) deviates above some critical deviation (say, +1.5 Celsius)
+		% then it starts impacting the income-per-capita
+		k_R = parameters_.k_R;
+		c_R = parameters_.c_R;
+		k_P = parameters_.k_P;
+		c_P = parameters_.c_P;
+
+
+		% Baseline per-capita income for rich and poor
+		omega_R = parameters_.omega_R;
+		omega_P = parameters_.omega_P;
+
+		%T_0 = 1.5;
+		In_R = omega_R - k_R .* exp(c_R .* (T - T_0));
+		In_P = omega_P - k_P .* exp(c_P .* (T - T_0));
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		fitnesses = compute_payoffs(proportions, parameters_, T, T_f, In_P, In_R);
+		disp(fitnesses)
 
 		temp_x0_ = [xP0, xR0];
 		dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily);
@@ -161,7 +188,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		y2 =0;
 	end 
 	%%% Carbon uptake/transport DEs
-	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_);  % Atmospheric
+	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_, prop_R0, In_P, In_R);  % Atmospheric
 	y4 = C_oc_dot(t, F_oc);  % Ocean
 	y5 = C_veg_dot(t, P, R_veg, L_); % Vegetation
 	y6 = C_so_dot(t, R_so, L_);  % Soil
