@@ -22,20 +22,30 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 	h = homophily;
 	
 	for i= 1:1:num_subpops
+
 		% Grab subpop. to update
 		x = proportions(i,1); % ASSUME TWO STRATEGIES
 		
 		% Update from same subpopulation
 		for j = 1:1:num_strats
-			if i ~= j
+			if j ~= 1
 				nu_ij = meeting_rates(i);
 				y = proportions(i,j); 
 				fitness_i1 = fitnesses(i,1);
 				fitness_ij = fitnesses(i,j);
 
+				if i == 2
+					disp("nu_ij = " + num2str(nu_ij))
+					disp("y = " + num2str(y))
+					disp("fitness_i1 = " + num2str(fitness_i1))
+					disp("fitness_ij = " + num2str(fitness_ij))
+				end
+
 				tot_change(i) = nu_ij.*x.*y.*(fitness_i1 - fitness_ij);
 			end
 		end
+		disp("subpop = " + num2str(i))
+		disp("dPdt = " + num2str(tot_change(i)))		
 		
 		% Update from other subpops.
 		temp_subpop_contr = 0;
@@ -73,9 +83,9 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 	if num_strats == 2
 		
 	end
-	disp("nu = " + num2str(meeting_rates))
-	disp("proportions  = " + num2str(proportions))
-	disp(tot_change)
+	% disp("nu = " + num2str(meeting_rates))
+	% disp("proportions  = " + num2str(proportions))
+	% disp(tot_change)
 	dPdt = tot_change;
 
 	
