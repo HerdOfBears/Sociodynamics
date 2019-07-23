@@ -59,8 +59,8 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 	for N = [numSim]
 		
 			
-		disp('test:')
-		disp(N)
+		% disp('test:')
+		% disp(N)
 		parameters_baseline  = get_parameters_YJM(0);
 		xP0 = parameters_baseline.xP0;
 		xR0 = parameters_baseline.xR0;
@@ -69,7 +69,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 		% initial_conditions(1) = xP0;%0.05;
 		% initial_conditions(2) = xR0;
 		initial_conditions = [xP0; xR0; initial_conditions(2:end, 1)];
-		size(initial_conditions)
+		% size(initial_conditions);
 		% initial_conditions(1) = x0;
 		%parameters_baseline = parameters_baseline(2:end);
 		
@@ -85,7 +85,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 
 			initial_conditions(1) = xP0;
 			initial_conditions(2) = xR0;			
-			size(initial_conditions)
+			% size(initial_conditions)
 			%parameters_given= parameters_given(2:end);
 			
 			results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, vec_proportions);

@@ -37,9 +37,11 @@ function fitnesses = compute_payoffs(proportions, parameters_, T, T_f, In_P, In_
 	% In_R = omega_R - k_R .* exp(c_R .* (T - T_0));
 	% In_P = omega_P - k_P .* exp(c_P .* (T - T_0));
 
-	dissatisfaction_measure = ( prop_R0 - xR ).*(In_R - In_P);
+	dissatisfaction_measure = ( prop_R0 - xR ).*(In_R - In_P); % currently only affects the resource-poor subpop. 
+	% dissatisfaction_measure = ( prop_R0 - xR ).*(In_R - In_P); % currently only affects the resource-poor subpop. 
+	alpha_P1 = 0;
 
-	alpha_P = alpha_P0 + alpha_P1 .* ( 1 - exp(dissatisfaction_measure) );
+	alpha_P = alpha_P0 ;%+ alpha_P1 .* ( 1 - exp(dissatisfaction_measure) );
 	alpha_R = alpha_R0;
 
 	cost_climate_ = cost_climate(T_f, f_max, omega, T_c);

@@ -161,12 +161,12 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		omega_P = parameters_.omega_P;
 
 		%T_0 = 1.5;
-		In_R = omega_R - k_R .* exp(c_R .* (T - T_0));
-		In_P = omega_P - k_P .* exp(c_P .* (T - T_0));
+		In_R = omega_R - k_R.*(T-T_0);% .* exp(c_R .* (T - T_0));
+		In_P = omega_P - k_P.*(T-T_0);% .* exp(c_P .* (T - T_0));
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		fitnesses = compute_payoffs(proportions, parameters_, T, T_f, In_P, In_R);
-		disp(fitnesses)
+		% disp(fitnesses)
 
 		temp_x0_ = [xP0, xR0];
 		dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily);

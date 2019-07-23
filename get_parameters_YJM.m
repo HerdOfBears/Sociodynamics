@@ -14,10 +14,10 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	if ~random_yes_no
 		% Initial proportion of the tot. population that is 
 		% rich compared to poor.
-		parameters_given.prop_R0 = 0.2;
+		parameters_given.prop_R0 = 0.3;
 	end
 	if random_yes_no
-		pdpropR = makedist('Triangular', 'a', 0.05, 'b', 0.2, 'c', 0.35);
+		pdpropR = makedist('Triangular', 'a', 0.15, 'b', 0.3, 'c', 0.45);
 		parameters_given.prop_R0 = random(pdpropR, 1,1);
 	end
 
@@ -25,7 +25,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	parameters_given.xP0   = 0.05 .* (1 - parameters_given.prop_R0);
 	parameters_given.xR0   = 0.05 .* parameters_given.prop_R0;
 	
-	parameters_given.homophily = 1;
+	parameters_given.homophily = 0;
 
 	parameters_given.kappa = 0.2;
 	parameters_given.delta = 0.5; % Controls how strong the restoring force is for a strategy proportional to the number of people (social) with that strategy
@@ -43,8 +43,8 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 
 	% Baseline per-capita income for rich and poor
 	% Assume 20% of pop. is rich and the rich pop. holds 45% of tot. income
-	parameters_given.omega_R = 9.0; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
-	parameters_given.omega_P = 6.0;
+	parameters_given.omega_R = 36.0; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
+	parameters_given.omega_P = 24.0;
 
 	% how quickly income decreases with large temperature deviations
 	parameters_given.k_R = 0.5; 

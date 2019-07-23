@@ -34,7 +34,7 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 				fitness_i1 = fitnesses(i,1);
 				fitness_ij = fitnesses(i,j);
 
-				if i == 2
+				if i == 20
 					disp("nu_ij = " + num2str(nu_ij))
 					disp("y = " + num2str(y))
 					disp("fitness_i1 = " + num2str(fitness_i1))
@@ -44,8 +44,8 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 				tot_change(i) = nu_ij.*x.*y.*(fitness_i1 - fitness_ij);
 			end
 		end
-		disp("subpop = " + num2str(i))
-		disp("dPdt = " + num2str(tot_change(i)))		
+		% disp("subpop = " + num2str(i))
+		% disp("dPdt = " + num2str(tot_change(i)))		
 		
 		% Update from other subpops.
 		temp_subpop_contr = 0;
