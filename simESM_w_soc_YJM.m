@@ -79,8 +79,9 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 		for idx_ = 1:1:N
 			disp(idx_)
 			parameters_given = get_parameters_YJM(random_params_yes_no);
-			xP0 = parameters_baseline.xP0;
-			xR0 = parameters_baseline.xR0;
+			% parameters_given
+			xP0 = parameters_given.xP0;
+			xR0 = parameters_given.xR0;
 			vec_proportions = [xP0, xR0];
 
 			initial_conditions(1) = xP0;
@@ -88,7 +89,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan)
 			% size(initial_conditions)
 			%parameters_given= parameters_given(2:end);
 			
-			results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, vec_proportions);
+			results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_given, test_1751to2014, vec_proportions);
 			avg_ = avg_ + results_(:,2:end);
 			if idx_==1
 				all_results.xPvals = [results_(:,1)];

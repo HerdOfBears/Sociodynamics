@@ -34,7 +34,7 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 				fitness_i1 = fitnesses(i,1);
 				fitness_ij = fitnesses(i,j);
 
-				if i == 20
+				if i == 20 % never reaches 20
 					disp("nu_ij = " + num2str(nu_ij))
 					disp("y = " + num2str(y))
 					disp("fitness_i1 = " + num2str(fitness_i1))

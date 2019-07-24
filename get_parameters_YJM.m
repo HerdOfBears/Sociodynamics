@@ -8,16 +8,16 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 			Switches between returning parameters sampled from triangular
 			distributions, or to return baseline params with upper and lower bounds. 
 	%}
-
+	% rng(101)
 	parameters_given = struct();
 	
 	if ~random_yes_no
 		% Initial proportion of the tot. population that is 
 		% rich compared to poor.
-		parameters_given.prop_R0 = 0.3;
+		parameters_given.prop_R0 = 0.5;
 	end
 	if random_yes_no
-		pdpropR = makedist('Triangular', 'a', 0.15, 'b', 0.3, 'c', 0.45);
+		pdpropR = makedist('Triangular', 'a', 0.25, 'b', 0.5, 'c', 0.75);
 		parameters_given.prop_R0 = random(pdpropR, 1,1);
 	end
 
@@ -37,17 +37,17 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	parameters_given.f_gtm = 8.3259 .* 10^(13); % conversion factor GtC -> C; pg. 1 of Thomas' SI    
 
 	%%%% Parameters used in computing payoffs:
-	parameters_given.alpha_P0 = 1.5; % 
-	parameters_given.alpha_P1 = 1.5; % Controls the cost of mitigative behaviour when there is no dissatisfaction
-	parameters_given.alpha_R0 = 1.0; % Cost of mitigative behaviour for rich subpop.
+	parameters_given.alpha_P0 = 1.0; % 
+	parameters_given.alpha_P1 = 1.0; % Controls the cost of mitigative behaviour when there is no dissatisfaction
+	parameters_given.alpha_R0 = 0.5; % Cost of mitigative behaviour for rich subpop.
 
 	% Baseline per-capita income for rich and poor
 	% Assume 20% of pop. is rich and the rich pop. holds 45% of tot. income
-	parameters_given.omega_R = 36.0; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
-	parameters_given.omega_P = 24.0;
+	parameters_given.omega_R = 3.60; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
+	parameters_given.omega_P = 2.40;
 
 	% how quickly income decreases with large temperature deviations
-	parameters_given.k_R = 0.5; 
+	parameters_given.k_R = 0.25; 
 	parameters_given.c_R = 1.0;
 	parameters_given.k_P = 1.0;
 	parameters_given.c_P = 1.4;
@@ -143,7 +143,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		%%%%%%%%%%%%%%
 		%%%% Parameter values
 		%%%%%%%%%%%%%%
-		parameters_given = [];
+		%parameters_given = [];
 
 		pdx_0 = makedist('Triangular', 'a', 0.01, 'b', 0.05, 'c', 0.1);
 		%x_0 = 0.05;%;%random(pdx_0, 1,1);
@@ -275,6 +275,19 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		parameters_given.zeta   = random(pdZeta,1,1); % (40, 50, 60) "evasion factor"
 
 		%disp(H)
+
+		C_at0 = parameters_given.C_at0;
+		f_gtm = parameters_given.f_gtm;
+		k_a   = parameters_given.k_a;
+		P_0   = parameters_given.P_0;
+		latent_heat = parameters_given.latent_heat;
+		A = parameters_given.A;
+		S = parameters_given.S;
+		tao_CH4 = parameters_given.tao_CH4;
+
+		parameters_given.tao_co2 = 1.73.*(mixingCO2a(0, C_at0, f_gtm, k_a)).^0.263;
+		tao_co2 = parameters_given.tao_co2; 
+		parameters_given.H = calibrate_humidity(P_0, latent_heat, A, S, tao_CH4, tao_co2);
 
 		pdf_max = makedist('Triangular', 'a', 4, 'b', 5, 'c', 6);
 		parameters_given.f_max = 6;
