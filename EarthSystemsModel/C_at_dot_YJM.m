@@ -1,4 +1,4 @@
-function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, temp_x0_, prop_R0, In_P, In_R)
+function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, temp_x0_, prop_R0, In_P, In_R, In_P0, In_R0)
 	% Time rate of change for C_at
 	%{
 	Variables:
@@ -18,8 +18,9 @@ function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, t
 	xP0 = temp_x0_(1);
 	xR0 = temp_x0_(2);
 	normalizer_ = ( ((1-prop_R0)-xP0) + (prop_R0-xR0) );
-	epsilon_R = epsilon .* (( prop_R0 - xR )./normalizer_ );% .* In_R;
-	epsilon_P = epsilon .* (( (1-prop_R0) - xP)./normalizer_ );% .* In_P;
+
+	epsilon_R = epsilon .* ((     prop_R0  - xR )./normalizer_ ) .* (In_R./In_R0);
+	epsilon_P = epsilon .* (( (1- prop_R0) - xP )./normalizer_ ) .* (In_P./In_P0);
 
 	dC_atdt = epsilon_P + epsilon_R - P + R_veg + R_so - F_oc;
 end

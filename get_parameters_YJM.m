@@ -44,10 +44,10 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	% Baseline per-capita income for rich and poor
 	% Assume 20% of pop. is rich and the rich pop. holds 45% of tot. income
 	parameters_given.omega_R = 3.60; % derived from above two assumptions: I_R = 4 * (0.45/0.55) * I_P
-	parameters_given.omega_P = 2.40;
+	parameters_given.omega_P = 2.4;
 
 	% how quickly income decreases with large temperature deviations
-	parameters_given.k_R = 0.25; 
+	parameters_given.k_R = 0.5; 
 	parameters_given.c_R = 1.0;
 	parameters_given.k_P = 1.0;
 	parameters_given.c_P = 1.4;

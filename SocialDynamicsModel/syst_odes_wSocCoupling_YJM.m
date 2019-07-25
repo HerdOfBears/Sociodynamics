@@ -80,6 +80,9 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	delta = parameters_.delta;  % strength of social norms
 
 	
+
+	In_R0 = parameters_.omega_R;
+	In_P0 = parameters_.omega_P;	
 	%%%%%%%%%%%%%%%%
 	%%% Functions
 	%%%%%%%%%%%%%%%%
@@ -165,7 +168,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		In_P = omega_P - k_P.*(T-T_0);% .* exp(c_P .* (T - T_0));
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-		fitnesses = compute_payoffs(proportions, parameters_, T, T_f, In_P, In_R);
+		fitnesses = compute_payoffs(t, proportions, parameters_, T, T_f, In_P, In_R);
 		% disp(fitnesses)
 
 		temp_x0_ = [xP0, xR0];
@@ -176,7 +179,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	if (temp_pred_ON == 0) && (t>2014)
 		% Just use the current temperature value, not the future projection T_f
 		% Get the payoffs for each subpop. and strategy.
-		fitnesses = compute_payoffs(proportions, parameters_, T, T);
+		fitnesses = compute_payoffs(t,proportions, parameters_, T, T);
 
 		temp_x0_ = [xP0, xR0];
 		dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homophily);
@@ -188,7 +191,7 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		y2 =0;
 	end 
 	%%% Carbon uptake/transport DEs
-	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_, prop_R0, In_P, In_R);  % Atmospheric
+	y3 = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon_T, temp_x0_, prop_R0, In_P, In_R, In_P0, In_R0);  % Atmospheric
 	y4 = C_oc_dot(t, F_oc);  % Ocean
 	y5 = C_veg_dot(t, P, R_veg, L_); % Vegetation
 	y6 = C_so_dot(t, R_so, L_);  % Soil
