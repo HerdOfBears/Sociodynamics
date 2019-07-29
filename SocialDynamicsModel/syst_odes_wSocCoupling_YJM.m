@@ -163,9 +163,12 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		omega_R = parameters_.omega_R;
 		omega_P = parameters_.omega_P;
 
-		%T_0 = 1.5;
-		In_R = omega_R - k_R.*(T-T_0);% .* exp(c_R .* (T - T_0));
-		In_P = omega_P - k_P.*(T-T_0);% .* exp(c_P .* (T - T_0));
+		T_in_c = 1.5;
+		% In_R = omega_R - k_R.*(T-T_0);% .* exp(c_R .* (T - T_0));
+		% In_P = omega_P - k_P.*(T-T_0);% .* exp(c_P .* (T - T_0));
+		In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_in_c)) + 1) );%.* exp(c_R .* (T - T_0));
+		In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_in_c)) + 1) );
+
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 		fitnesses = compute_payoffs(t, proportions, parameters_, T, T_f, In_P, In_R);

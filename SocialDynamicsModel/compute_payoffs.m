@@ -35,8 +35,11 @@ function fitnesses = compute_payoffs(time_,proportions, parameters_, T, T_f, In_
 	% % Once temperature (T) deviates above some critical deviation (say, +1.5 Celsius)
 	% % then it starts impacting the income-per-capita
 	T_0 = 1.5;
-	In_R = omega_R - k_R.* max(0,T - T_0) +0.1.*(time_-2014);%.* exp(c_R .* (T - T_0));
-	In_P = omega_P - k_P.* max(0,T - T_0) +0.025.*(time_-2014);%.* exp(c_P .* (T - T_0));
+	% In_R = omega_R - k_R.* max(0,T - T_0);%.* exp(c_R .* (T - T_0));
+	% In_P = omega_P - k_P.* max(0,T - T_0);%.* exp(c_P .* (T - T_0));
+
+	% In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_0)) + 1) );%.* exp(c_R .* (T - T_0));
+	% In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_0)) + 1) );%.* exp(c_P .* (T - T_0));
 
 	dissatisfaction_measure = ( (prop_R0 - xR)./prop_R0 ).*(In_R - In_P); % currently only affects the resource-poor subpop. 
 	% dissatisfaction_measure = ( prop_R0 - xR ).*(In_R - In_P); % currently only affects the resource-poor subpop. 

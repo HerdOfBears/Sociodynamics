@@ -48,9 +48,9 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 
 	% how quickly income decreases with large temperature deviations
 	parameters_given.k_R = 0.5; 
-	parameters_given.c_R = 1.0;
+	parameters_given.c_R = 3.0;
 	parameters_given.k_P = 1.0;
-	parameters_given.c_P = 1.4;
+	parameters_given.c_P = 2.0;
 
 	if ~random_yes_no
 		%%%%%%%%%%%%%%
