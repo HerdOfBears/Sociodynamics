@@ -19,7 +19,7 @@ function parameters =  params4SensiAna_YJM_perc(percentage_, vary_prop_)
 		upper_ = 1 + percentage_;
 		
 		% temp_.homophily = [0,0.5,1.0];
-		temp_.homophily = [0];
+		temp_.homophily = [1];
 
 		%%%% Parameters used in computing payoffs:
 		% temp_.alpha_P0 = 1.0; % 

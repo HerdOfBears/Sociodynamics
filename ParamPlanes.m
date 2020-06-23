@@ -1,4 +1,4 @@
-function finResults = ParamPlane(vary1, vary1values, vary2, vary2values,numSim, tspan)
+function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim, tspan)
 	% Yellow Jacket Model version
     % Script created 2020-006-09 by jmenard 
     % Final script for making param planes. 
@@ -7,7 +7,12 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values,numSim, 
     % vary1values, vary2values : arrays. Values to iterate over. 
     
     % If numSim >1, we'll sample the other parameters randomly and take the median(max(temperature_value)).
-
+    if numSim>1
+        numSim=1;
+        disp("currently unable to accomodate numSim>1")
+        disp("fmax = 5")
+        disp("homophily = 0.5")
+    end
 	addpath('./Sociodynamics/EarthSystemsModel');
 	addpath('./Sociodynamics/SocialDynamicsModel');
 	addpath('./Sociodynamics/data');
@@ -29,8 +34,10 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values,numSim, 
 	initial_conditions  = test_1751to2014(end,2:end)'; %transposed
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	%%% Initializations of output arrays
-    end_result_peakTempVals = zeros(length(homophilyValues), numSim);
+    %%% Initializations of output arrays
+    vary1values_length = length(vary1values);
+    vary2values_length = length(vary2values);    
+    end_result_peakTempVals = zeros(vary1values_length, vary2values_length);
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,8 +59,11 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values,numSim, 
         end
         % y = zeros(numel(tspan),6);
 
-		random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == use baseline
-        
+        random_params_yes_no = 0;
+        if numSim > 1
+    		random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == use baseline
+        end
+
         %%% FETCH params
         parameters_given = get_parameters_YJM(random_params_yes_no);
 
@@ -70,29 +80,42 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values,numSim, 
         if length(initial_conditions) == 6
             initial_conditions = [xP0; xR0; initial_conditions(2:end, 1)];
         end
-        
-        for hValIdx = 1:1:length(homophilyValues)
-            
-            h_val = homophilyValues(hValIdx);
 
-            %%% REPLACE with inputted params; parameters_given
-            parameters_given.homophily = h_val;
-            xP0 = parameters_given.xP0;
-            xR0 = parameters_given.xR0;
-            vec_proportions = [xP0, xR0];
+        if numSim == 1
+            tic
+        end
 
-            initial_conditions(1) = xP0;
-            initial_conditions(2) = xR0;
-            
-            %%% INTEGRATE system to get results using those parameters. 
-            results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_given, test_1751to2014, vec_proportions);
-            
-            %%% COLLECT results over the runs.
-            %%% Grab the peak temperature over the series. 
-            temperature_vals_ = results_(:,7);
-            peak_T_val_ = max(temperature_vals_);
-            end_result_peakTempVals(hValIdx, idx_) = peak_T_val_;
-        end % Gives result for 1 sample of parameters over each homophily value.         
+        for v1_idx = 1:1:vary1values_length
+            for v2_idx = 1:1:vary2values_length
+                v1 = vary1values(v1_idx);
+                v2 = vary2values(v2_idx);
+
+                %%% REPLACE with inputted params; parameters_given
+                parameters_given.(vary1) = v1;
+                parameters_given.(vary2) = v2;
+                parameters_given.homophily = 0.5;
+                parameters_given.f_max = 5;
+
+                xP0 = parameters_given.xP0;
+                xR0 = parameters_given.xR0;
+                vec_proportions = [xP0, xR0];
+
+                initial_conditions(1) = xP0;
+                initial_conditions(2) = xR0;
+                
+                %%% INTEGRATE system to get results using those parameters. 
+                results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_given, test_1751to2014, vec_proportions);
+                
+                %%% COLLECT results over the runs.
+                %%% Grab the peak temperature over the series. 
+                temperature_vals_ = results_(:,7);
+                peak_T_val_ = max(temperature_vals_);
+                end_result_peakTempVals(v1_idx, v2_idx) = peak_T_val_;
+            end
+        end
+        if numSim == 1
+            toc
+        end
 	end
 
 

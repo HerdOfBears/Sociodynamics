@@ -102,7 +102,8 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily)
 				all_results.cveg   = [results_(:,5)];
 				all_results.cso    = [results_(:,6)];
 				all_results.T      = [results_(:,7)];
-				all_results.params = [parameters_given];
+				% all_results.params = [parameters_given];
+				all_results.prop_R0= [parameters_given.prop_R0];
 			end
 			if idx_>1
 				all_results.xPvals = [all_results.xPvals, results_(:,1)];
@@ -112,7 +113,8 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily)
 				all_results.cveg   = [all_results.cveg,   results_(:,5)];
 				all_results.cso    = [all_results.cso,    results_(:,6)];
 				all_results.T      = [all_results.T,      results_(:,7)];
-				all_results.params = [all_results.params, parameters_given];
+				% all_results.params = [all_results.params, parameters_given];
+				all_results.prop_R0= [all_results.prop_R0, parameters_given.prop_R0];				
 			end
 		end
 		avg_ = avg_./N;
