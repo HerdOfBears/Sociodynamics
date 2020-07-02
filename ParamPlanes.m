@@ -13,9 +13,9 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim,
         disp("fmax = 5")
         disp("homophily = 0.5")
     end
-	addpath('./Sociodynamics/EarthSystemsModel');
-	addpath('./Sociodynamics/SocialDynamicsModel');
-	addpath('./Sociodynamics/data');
+	addpath('Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('Documents/socioclimate/Sociodynamics/data');
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%% Numerically integrating
@@ -93,8 +93,15 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim,
                 %%% REPLACE with inputted params; parameters_given
                 parameters_given.(vary1) = v1;
                 parameters_given.(vary2) = v2;
-                parameters_given.homophily = 0.5;
-                parameters_given.f_max = 5;
+                %parameters_given.homophily = 0.5;
+                %parameters_given.f_max = 5;
+
+                cond1 = (vary1=="prop_R0");
+                cond2 = (vary2=="prop_R0");
+                if cond1|cond2
+                    parameters_given.xP0   = 0.05 .* (1 - parameters_given.prop_R0);
+                    parameters_given.xR0   = 0.05 .* parameters_given.prop_R0;
+                end
 
                 xP0 = parameters_given.xP0;
                 xR0 = parameters_given.xR0;

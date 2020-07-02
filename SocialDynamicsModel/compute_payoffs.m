@@ -44,12 +44,8 @@ function fitnesses = compute_payoffs(time_,proportions, parameters_, T, T_f, In_
 	% In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_0)) + 1) );%.* exp(c_R .* (T - T_0));
 	% In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_0)) + 1) );%.* exp(c_P .* (T - T_0));
 
-	% dissatisfaction_measure = ( (prop_R0 - xR)./prop_R0 ).*( (In_R - In_P)./(omega_R - omega_P) ); % currently only affects the resource-poor subpop.
 	dissatisfaction_measure = ( (prop_R0 - xR)./prop_R0 ).*( (In_R./In_P).*(omega_P./omega_R) ); % currently only affects the resource-poor subpop.	
 	% disp(dissatisfaction_measure)
-	% parameters_.homophily = (1./(1 + exp(-8.*(dissatisfaction_measure - 0.85) )) ); 
-	% dissatisfaction_measure = ( prop_R0 - xR ).*(In_R - In_P); % currently only affects the resource-poor subpop. 
-	% alpha_P1 = 1.0;
 
 	alpha_P = alpha_P0 + alpha_P1 .* (1.0./( 1 + exp(-Omega.*(dissatisfaction_measure - Td_c)) ) );
 	alpha_R = alpha_R0;

@@ -27,7 +27,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 	parameters_given.xP0   = 0.05 .* (1 - parameters_given.prop_R0);
 	parameters_given.xR0   = 0.05 .* parameters_given.prop_R0;
 	
-	parameters_given.homophily = 0;
+	parameters_given.homophily = 0.5;
 
 	parameters_given.kappa = 0.05;
 	parameters_given.delta = 1.0; % Controls how strong the restoring force is for a strategy proportional to the number of people (social) with that strategy

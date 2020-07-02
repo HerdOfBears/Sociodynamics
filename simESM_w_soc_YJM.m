@@ -1,10 +1,10 @@
-function finResults = simESM_w_soc_YJM(numSim, tspan, homophily)
+function finResults = simESM_w_soc_YJM(numSim, tspan, homophily, alpha_P1)
 	% Yellow Jacket Model version
 
 	%h = 0.1;  % Define Step Size
-	addpath('./Sociodynamics/EarthSystemsModel');
-	addpath('./Sociodynamics/SocialDynamicsModel');
-	addpath('./Sociodynamics/data');
+	addpath('./Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/data');
 
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,12 +66,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily)
 		xR0 = parameters_baseline.xR0;
 		vec_proportions = [xP0, xR0];
 
-		% initial_conditions(1) = xP0;%0.05;
-		% initial_conditions(2) = xR0;
 		initial_conditions = [xP0; xR0; initial_conditions(2:end, 1)];
-		% size(initial_conditions);
-		% initial_conditions(1) = x0;
-		%parameters_baseline = parameters_baseline(2:end);
 		
 		bline_params_results = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_baseline, test_1751to2014, vec_proportions);
 		
@@ -80,8 +75,18 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily)
 			if rem(idx_,10) == 0
 				disp(idx_)
 			end
+			% get parameters and set custom ones. 
 			parameters_given = get_parameters_YJM(random_params_yes_no);
 			parameters_given.homophily = homophily;
+
+			if nargin==4
+				parameters_given.alpha_P1 = alpha_P1;
+				parameters_given.f_max = 5;
+			end
+
+			% parameters_given.xP0 = 0.05;
+			% parameters_given.xR0 = 0.05;			
+
 			% parameters_given
 			xP0 = parameters_given.xP0;
 			xR0 = parameters_given.xR0;

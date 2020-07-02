@@ -19,23 +19,11 @@ function dC_atdt = C_at_dot_YJM(t, proportions, P, R_veg, R_so, F_oc, epsilon, t
 	xR0 = temp_x0_(2);
 	normalizer_ = ( ((1-prop_R0)-xP0).*In_P0 + (prop_R0-xR0).*In_R0 );
 
-	% epsilon_R = epsilon .* ((     prop_R0  - xR )./normalizer_ ) .* (In_R./(In_R0 + In_P0));
-	% epsilon_P = epsilon .* (( (1- prop_R0) - xP )./normalizer_ ) .* (In_P./(In_P0 + In_R0));
-
-	% INTERESTING RESULTS
-	% epsilon_R = epsilon .* ((     prop_R0  - xR )./(prop_R0-xR0) ) .* (In_R./(In_R0 + In_P0));
-	% epsilon_P = epsilon .* (( (1- prop_R0) - xP )./((1-prop_R0)-xP0) ) .* (In_P./(In_P0 + In_R0));
-
-	%% NORMALIZATION 3
-	% epsilon_R = epsilon .* ((     prop_R0  - xR )./(prop_R0-xR0) ) .* (In_R./(In_R0));
-	% epsilon_P = epsilon .* (( (1- prop_R0) - xP )./((1-prop_R0)-xP0) ) .* (In_P./(In_P0));
-
-	% NEW NORMALIZATION as per Tom's suggestion
-	epsilon_R = epsilon .* (     prop_R0  - xR ).*(In_R);
-	epsilon_P = epsilon .* ( (1- prop_R0) - xP ).*(In_P);		
-
-	%% GOES WITH NORMALIZATION 3
-	% dC_atdt = (0.5).*(epsilon_P + epsilon_R) - P + R_veg + R_so - F_oc;
+	% Impact on emissions by non-mitigators. 
+	yR_ = (prop_R0 - xR);
+	yP_ = ( (1-prop_R0) - xP);
+	epsilon_R = epsilon .* ( yR_ ).*(In_R);
+	epsilon_P = epsilon .* ( yP_ ) - xP ).*(In_P);		
 
 	dC_atdt = ( (epsilon_P + epsilon_R)./normalizer_ ) - P + R_veg + R_so - F_oc;
 end

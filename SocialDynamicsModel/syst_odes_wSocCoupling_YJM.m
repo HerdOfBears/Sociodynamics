@@ -110,15 +110,17 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	temp_x0_ = 0;
 	%%% Create proportions array
 	prop_R0 = parameters_.prop_R0;
-	% proportions(1,1) = xP0;
-	% proportions(1,2) = (1-prop_R0)-xP0;
-	% proportions(2,1) = xR0;
-	% proportions(2,2) = prop_R0-xR0;
 
+	% THE USUAL
 	proportions(1,1) = xP;
 	proportions(1,2) = (1-prop_R0)-xP;
 	proportions(2,1) = xR;
 	proportions(2,2) = prop_R0-xR;
+
+	% proportions(1,1) = xP./(1-prop_R0);
+	% proportions(1,2) = ( (1-prop_R0)-xP )./(1-prop_R0);
+	% proportions(2,1) = xR./prop_R0;
+	% proportions(2,2) = ( prop_R0-xR )./prop_R0;	
 
 
 	%disp("xP xR = " + num2str(xP) + " " + num2str(xR))
@@ -165,14 +167,12 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 
 		T_in_c = 2.0;
 		% T_in_c = 1.5;		
-		% In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_in_c)) + 1) );%.* exp(c_R .* (T - T_0));
-		% In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_in_c)) + 1) );
 
+		% omega_P = omega_R;
+		% c_R = 0;
+		% c_P = c_R;
 		In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_in_c)) + 1) );%
 		In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_in_c)) + 1) );%
-
-		% In_R = max(0, omega_R - exp((1/c_R)*(T-1.5)) );%.* exp(c_R .* (T - T_0));
-		% In_P = max(0, omega_P - exp((1/c_P)*(T-1.5)) );
 
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
