@@ -37,26 +37,28 @@ function fitnesses = compute_payoffs(time_,proportions, parameters_, T, T_f, In_
 	%%% Functions
 	% % Once temperature (T) deviates above some critical deviation (say, +1.5 Celsius)
 	% % then it starts impacting the income-per-capita
-	T_0 = 1.5;
-	% In_R = omega_R - k_R.* max(0,T - T_0);%.* exp(c_R .* (T - T_0));
-	% In_P = omega_P - k_P.* max(0,T - T_0);%.* exp(c_P .* (T - T_0));
-
-	% In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_0)) + 1) );%.* exp(c_R .* (T - T_0));
-	% In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_0)) + 1) );%.* exp(c_P .* (T - T_0));
 
 	dissatisfaction_measure = ( (prop_R0 - xR)./prop_R0 ).*( (In_R./In_P).*(omega_P./omega_R) ); % currently only affects the resource-poor subpop.	
 	% disp(dissatisfaction_measure)
 
-	alpha_P = alpha_P0 + alpha_P1 .* (1.0./( 1 + exp(-Omega.*(dissatisfaction_measure - Td_c)) ) );
+	cost_dissatisfaction = alpha_P1 .* (1.0./( 1 + exp(-Omega.*(dissatisfaction_measure - Td_c)) ) );
+	alpha_P = alpha_P0 + cost_dissatisfaction;
 	alpha_R = alpha_R0;
 
 	cost_climate_ = 0.5.*cost_climate(T_f, f_max, omega, T_c);
 
+	%% THE USUAL
 	pay_P_M = (-1).*alpha_P + cost_climate_ + delta.*((xP) + (1-homophily).*xR);
 	pay_P_N = -cost_climate_ + delta .* (  (1-homophily).*(prop_R0-xR) - ((1-prop_R0) - xP)  );%( (1-prop_R0)-xP );
 	pay_R_M = (-1).*alpha_R + cost_climate_ + delta.*((1-homophily).*xP + xR);
 	pay_R_N = -cost_climate_ + delta .* (  (prop_R0-xR) - (1-homophily).*((1-prop_R0) - xP)  );%( prop_R0 - xR );
 
+	% %% cost of dissatisfaction increases non-mitigation payoff in poor group? if yes, use this one:
+	% alpha_P = alpha_P0 + 0.5.*cost_dissatisfaction;
+	% pay_P_M = (-1).*alpha_P + cost_climate_ + delta.*((xP) + (1-homophily).*xR);
+	% pay_P_N = cost_dissatisfaction - cost_climate_ + delta .* (  (1-homophily).*(prop_R0-xR) - ((1-prop_R0) - xP)  );%( (1-prop_R0)-xP );
+	% pay_R_M = (-1).*alpha_R + cost_climate_ + delta.*((1-homophily).*xP + xR);
+	% pay_R_N = -cost_climate_ + delta .* (  (prop_R0-xR) - (1-homophily).*((1-prop_R0) - xP)  );
 
 	% %% HERE WE ARE TRYING TO NORMALIZE THE NORMS:
 	% pay_P_M = (-1).*alpha_P + cost_climate_ + delta.*((xP) + (1-homophily).*xR).*(1./( 1-homophily.*prop_R0));

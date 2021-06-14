@@ -1,19 +1,22 @@
-function finResults = tempvshomophily(numSim, tspan, hl, diffH, hu)
+function finResults = tempvshomophily(numSim, tspan, homophilyValues)
 	% Yellow Jacket Model version
     % Script created 2020-05-27 by jmenard
     % previous version sampled new parameters for each different homophily value, while we want to sample 
     % different params each simulation, not each homophily value.  
 
 
-    homophilyValues = hl:diffH:hu;
+    % homophilyValues = hl:diffH:hu;
 
     if numSim < 1
         numSim = 2;
     end
 
-	addpath('./Sociodynamics/EarthSystemsModel');
-	addpath('./Sociodynamics/SocialDynamicsModel');
-	addpath('./Sociodynamics/data');
+	% addpath('./Sociodynamics/EarthSystemsModel');
+	% addpath('./Sociodynamics/SocialDynamicsModel');
+	% addpath('./Sociodynamics/data');
+	addpath('./Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/data');
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%% Numerically integrating

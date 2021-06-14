@@ -1,16 +1,20 @@
 function finResults = tempvsinequality(numSim, tspan)
 	% Yellow Jacket Model version
 
-    omegaRvals = [0.9*5, 5, 1.1*5, 1.3*5, 1.5*5, 2*5];
+    % omegaRvals = [0.9*5, 5, 1.1*5, 1.3*5, 1.5*5, 2*5];
     omegaPvals = fliplr([ 3.5]);
+    omegaRvals = [1,10,100,1000].*3.5;
 
     if numSim < 1
         numSim = 2;
     end
 
-	addpath('./Sociodynamics/EarthSystemsModel');
-	addpath('./Sociodynamics/SocialDynamicsModel');
-	addpath('./Sociodynamics/data');
+	% addpath('./Sociodynamics/EarthSystemsModel');
+	% addpath('./Sociodynamics/SocialDynamicsModel');
+	% addpath('./Sociodynamics/data');
+	addpath('./Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/data');
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%% Numerically integrating
@@ -55,8 +59,11 @@ function finResults = tempvsinequality(numSim, tspan)
 
         %%% FETCH params
         parameters_given = get_parameters_YJM(random_params_yes_no);
-		pdHomophily = makedist('Triangular', 'a', 0, 'b', 0.5, 'c', 1);
-		parameters_given.homophily   = random(pdHomophily, 1,1); %  
+		% pdHomophily = makedist('Triangular', 'a', 0, 'b', 0.5, 'c', 1);
+		% parameters_given.homophily   = random(pdHomophily, 1,1); %  
+        parameters_given.homophily=1;
+        parameters_given.alpha_P1=0;
+        parameters_given.f_max = 5;
 
         parameters_baseline  = get_parameters_YJM(0); % Fetches baseline parameters
         xP0 = parameters_baseline.xP0;
@@ -79,7 +86,7 @@ function finResults = tempvsinequality(numSim, tspan)
                 omega_R = omegaRvals(omega_R_Idx);
                 omega_P = omegaPvals(omega_P_Idx);
 
-                omega_diff  = omega_R - omega_P;
+                % omega_diff  = omega_R - omega_P;
                 omega_ratio = omega_P./(omega_R);
             
                 %%% REPLACE with inputted params; parameters_given

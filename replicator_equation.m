@@ -45,7 +45,7 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 					disp("fitness_ij = " + num2str(fitness_ij))
 				end
 
-				% tot_change(i) = nu_ij.*x.*y.*(fitness_i1 - fitness_ij);
+				% tot_change(i) = (1./nu_ij).*x.*y.*(fitness_i1 - fitness_ij);
 				tot_change(i) = x.*y.*(fitness_i1 - fitness_ij);				
 			end
 		end
@@ -82,7 +82,14 @@ function dPdt = replicator_equation(proportions, meeting_rates, fitnesses, homop
 		% Include the contribution to dPdt from other subpopulations.
 		% When homophily is 1, there will be no contribution from other
 		% subpopulations
+		if i == 1
+			temp_div = meeting_rates(2);
+		end
+		if i == 2
+			temp_div = meeting_rates(1);
+		end
 		tot_change(i) = tot_change(i) + (1-h).*temp_subpop_contr;
+		% tot_change(i) = tot_change(i) + (1-h).*temp_subpop_contr.*(1./temp_div);
 	end
 	% End of updating subpop i
 	

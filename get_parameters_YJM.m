@@ -18,9 +18,10 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		% parameters_given.prop_R0 = 0.75;		
 	end
 	if random_yes_no
-		pdpropR = makedist('Triangular', 'a', 0.10, 'b', 0.25, 'c', 0.40);
-		% pdpropR = makedist('Triangular', 'a', 0.60, 'b', 0.75, 'c', 0.90);		
+		% pdpropR = makedist('Triangular', 'a', 0.10, 'b', 0.25, 'c', 0.40);
+		pdpropR = makedist('Triangular', 'a', 0.25.*0.9, 'b', 0.25, 'c', 0.25.*1.1);		
 		parameters_given.prop_R0 = random(pdpropR, 1,1);
+		% parameters_given.prop_R0 = 0.25;
 	end
 
 	% Gets the proportion of the subpops' respective initial amounts
@@ -131,7 +132,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		parameters_given.omega = 3; % (1,3,5) nonlinearity of warming cost function
 		parameters_given.T_c   = 2.5;% (2.4, 2.5, 2.6) critical temperature of f(T)
 		parameters_given.t_p   = 10; % num. prev. yrs used for temp pred.
-		parameters_given.t_f   = 25; % (0, 25, 50) num yrs ahead for temp. proj.
+		parameters_given.t_f   = 15; % (0, 25, 50) num yrs ahead for temp. proj.
 		%s_    = 50;% (30, 50, 70) half-sat. time for epsilon(t) from 2014
 		parameters_given.eps_max   = 7;% (4.2, 7, 9.8) max change in epsilon(t) from 2014
 
@@ -198,7 +199,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		% 10
 		%%% Plant resp. params:
 		pdk_r = makedist('Triangular', 'a', 0.0828, 'b', 0.092, 'c', 0.1012);
-		%k_r = 0.092;
+		% parameters_given.k_r = 0.092;
 		parameters_given.k_r   = random(pdk_r, 1,1); % (0.0828, 0.092, 0.1012)
 		
 		%pdk_A = makedist('Triangular', 'a', 0.9*8.7039e9, 'b',8.7039e9, 'c', 1.1*8.7039e9);
@@ -213,10 +214,12 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 
 		% 12
 		%%% Soil resp. params:
-		pdk_sr = makedist('Triangular', 'a', 0.9*0.034, 'b', 0.0337, 'c', 1.1*0.034);
+		baseline = 0.0337;
+		pdk_sr = makedist('Triangular', 'a', 0.9*0.034, 'b', baseline, 'c', 1.1*0.034);
 		%k_sr = 0.034;
 		parameters_given.k_sr = random(pdk_sr,1,1); % soil resp. rate const.(0.0303, 0.034, 0.037)
-		
+		% parameters_given.k_sr = baseline;
+
 		%pdk_B = makedist('Triangular', 'a', 0.9*157.072, 'b', 157.072, 'c', 1.1*157.072);
 		%k_B  = 157.072;%;%random(pdk_B, 1, 1); %
 		
@@ -247,8 +250,14 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		parameters_given.A = random(pdA,1,1); % surface albedo (0.203, 0.225, 0.248)
 
 		% 22 Solar flux
-		pdS = makedist('Triangular', 'a', 0.9*1368, 'b', 1368, 'c', 1.1*1368);
+		baseline = 1368;
+		lower_b  = 1231;
+		upper_b  = 1504;
+		% lower_b  = 0.9*baseline;
+		% upper_b  = 1.1*baseline;
+		pdS = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.S = random(pdS,1,1); % solar flux (1231, 1368, 1504)
+		% parameters_given.S = baseline;
 
 		pdtao_CH4 = makedist('Triangular', 'a', 0.9*0.0231, 'b', 0.0231, 'c', 1.1*0.0231);
 		%tao_CH4 = 0.0231;
@@ -293,58 +302,94 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		%omega = 3;
 		parameters_given.omega   = random(pdOmega,1,1); % (1,3,5) nonlinearity of warming cost function
 
-		pdT_c = makedist('Triangular', 'a', 2.4, 'b', 2.5, 'c', 2.6);
-		%T_c = 2.5;
-		parameters_given.T_c   = random(pdT_c,1,1); % (2.4, 2.5, 2.6) critical temperature of f(T)
-		
+		baseline = 2.5;
+		lower_b  = 0.9*baseline;
+		upper_b  = 1.1*baseline;
+		pdT_c = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
+		parameters_given.T_c = random(pdT_c,1,1); % (2.4, 2.5, 2.6) critical temperature of f(T)
+		% parameters_given.T_c = baseline;
+
+
 		parameters_given.t_p   = 10; % num. prev. yrs used for temp pred.
 		
-		pdt_f = makedist('Triangular', 'a', 0, 'b', 25, 'c', 50);
+
+		baseline = 15;
+		% lower_b  = 0;
+		% upper_b  = 50;
+		lower_b  = 0.9*baseline;
+		upper_b  = 1.1*baseline;
+		pdt_f = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.t_f   = random(pdt_f, 1,1); % (0, 25, 50) num yrs ahead for temp. proj.
+		% parameters_given.t_f = baseline;
 
 		%pds_  = makedist('Triangular', 'a', 30, 'b', 50, 'c', 70);
 		%s_    = 50;%;%random(pds_,1,1); % (30, 50, 70) half-sat. time for epsilon(t) from 2014
 
-		pdeps_max = makedist('Triangular', 'a', 4.2, 'b', 7, 'c', 9.8);
-		parameters_given.eps_max   = random(pdeps_max,1,1); % (4.2, 7, 9.8) max change in epsilon(t) from 2014
+		baseline = 7;
+		% lower_b  = 0.9*baseline;% 4.2 % normally, check table 1
+		% upper_b  = 1.1*baseline;% 9.8 % normally, check table 1
+		lower_b  = 4.2;
+		upper_b  = 9.8;
+		pdeps_max = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
+		parameters_given.eps_max = random(pdeps_max,1,1); % (4.2, 7, 9.8) max change in epsilon(t) from 2014
+		% parameters_given.eps_max = baseline;
 
-		pdkappa = makedist('Triangular', 'a', 0.02, 'b', 0.05, 'c', 0.2);
+		baseline = 0.05;
+		lower_b  = 0.02;
+		upper_b  = 0.2;
+		% lower_b  = 0.9*baseline;
+		% upper_b  = 1.1*baseline;	
+		pdkappa = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.kappa = random(pdkappa, 1,1);    % (0.02, 0.05, 0.2) social learning rate
+		% parameters_given.kappa = baseline;
 
 		%pdbeta = makedist('Triangular', 'a', 0.5, 'b', 1, 'c', 1.5);
 		%beta  = 1.0;%;%random(pdbeta,1,1);    % (0.5, 1, 1.5) net cost of being a mitigator
 		
-		pddelta = makedist('Triangular', 'a', 0.5, 'b', 1, 'c', 1.5);
-		parameters_given.delta = random(pddelta, 1,1);    % (0.5, 1, 1.5) strength of social norms
 
+		baseline = 1.0;
+		lower_b  = 0.5;
+		upper_b  = 1.5;
+		pddelta = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
+		parameters_given.delta = random(pddelta, 1,1);    % (0.5, 1, 1.5) strength of social norms
+		% parameters_given.delta = baseline;
+		
 		%%%% Parameters used in computing payoffs:
 		baseline = 3; % should be 1.0
+		% baseline = 1;
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;		
 		pd_Omega = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.Omega = random(pd_Omega, 1,1);
 
-		% baseline = 1.8; % usual
 		baseline = 1.5; % 
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;
 		pd_Td_c = makedist('Triangular', 'a',lower_b, 'b', baseline, 'c', upper_b);
-	
 		parameters_given.Td_c = random(pd_Td_c, 1,1);
+		% parameters_given.Td_c = baseline;
 
 		baseline = 1.0; % should be 1.0
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;		
 		pd_alphaP0 = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.alpha_P0 = random(pd_alphaP0, 1,1);
+		% parameters_given.alpha_P0 = baseline;
 
-		baseline = 4.5;
+		% baseline = 4.5;
+		baseline = 5;
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;
+		% lower_b  = 0.0*baseline;
+		% upper_b  = 2*baseline;
 		pd_alphaP1 = makedist('Triangular', 'a',lower_b, 'b', baseline, 'c', upper_b);		
 		parameters_given.alpha_P1 = random(pd_alphaP1, 1,1);
+		% parameters_given.alpha_P1 = baseline;
 
-		pd_alphaR0 = makedist('Triangular', 'a', 0.9*0.5, 'b', 0.5, 'c', 1.1*0.5);
+		baseline = 0.5;
+		lower_b  = 0.9*baseline;
+		upper_b  = 1.1*baseline;
+		pd_alphaR0 = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.alpha_R0 = random(pd_alphaR0, 1,1);
 
 		% Baseline per-capita income for rich and poor
@@ -353,6 +398,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		upper_b  = 1.1*baseline;
 		pd_omega_R = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.omega_R = random(pd_omega_R, 1,1);
+		% parameters_given.omega_R = baseline;
 
 		baseline = 3.5;
 		% baseline = 4;
@@ -360,6 +406,7 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		upper_b  = 1.1*baseline;
 		pd_omega_P = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.omega_P = random(pd_omega_P, 1,1);		
+		% parameters_given.omega_P = baseline;
 
 		% how quickly income decreases with large temperature deviations
 		% baseline = 3.5; % what is usually used
@@ -368,31 +415,34 @@ function parameters_ = get_parameters_YJM(random_yes_no)
 		upper_b  = 1.1*baseline;
 		pd_k_R = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.k_R = random(pd_k_R, 1,1);
+		% parameters_given.k_R = baseline;
 
-		baseline = 2.0; % what I usually use
-		% baseline = 1.5;
+		% baseline = 2.0; % what I usually use
+		baseline = 1.5;
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;
 		pd_k_P = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.k_P = random(pd_k_P, 1,1);
+		% parameters_given.k_P = baseline;
 
-		% baseline = 4.0;
-		% baseline = 5.0;	% for exponenial functions
-		 baseline = 2.0;	
+		% baseline = 0.85;	
+		% baseline = 0.1;
+		baseline = 0.4;
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;
 		pd_c_R = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.c_R = random(pd_c_R, 1,1);
+		% parameters_given.c_R = baseline;
 
 		% baseline = 2.0; 
 		% baseline = 1.5;
-		% baseline = 0.8; % for exponential functions
-		baseline = 3;				
+		% baseline = 0.6; % for exponential functions
+		baseline = 0.85;
 		lower_b  = 0.9*baseline;
 		upper_b  = 1.1*baseline;
 		pd_c_P = makedist('Triangular', 'a', lower_b, 'b', baseline, 'c', upper_b);
 		parameters_given.c_P = random(pd_c_P, 1,1);
-
+		% parameters_given.c_P = baseline;
 
 	end
 	parameters_ = parameters_given;

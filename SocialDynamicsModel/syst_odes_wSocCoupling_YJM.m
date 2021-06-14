@@ -106,12 +106,11 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 	%%%%%%%%%%%%%%%%
 	
 	%%%% Socio-dynamics model
-	%y1 = 0;
 	temp_x0_ = 0;
 	%%% Create proportions array
 	prop_R0 = parameters_.prop_R0;
 
-	% THE USUAL
+	% Main text
 	proportions(1,1) = xP;
 	proportions(1,2) = (1-prop_R0)-xP;
 	proportions(2,1) = xR;
@@ -171,8 +170,8 @@ function yprime = syst_odes_wSocCoupling_YJM(t, x_vec, parameters_, temp_history
 		% omega_P = omega_R;
 		% c_R = 0;
 		% c_P = c_R;
-		In_R = max(0, omega_R - c_R.* 1./(exp(-k_R.*(T-T_in_c)) + 1) );%
-		In_P = max(0, omega_P - c_P.* 1./(exp(-k_P.*(T-T_in_c)) + 1) );%
+		In_R = max(0, omega_R.*(1 - c_R.* 1./(exp(-k_R.*(T-T_in_c)) + 1)) );%
+		In_P = max(0, omega_P.*(1 - c_P.* 1./(exp(-k_P.*(T-T_in_c)) + 1)) );%
 
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

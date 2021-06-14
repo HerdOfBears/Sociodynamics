@@ -11,7 +11,7 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim,
         numSim=1;
         disp("currently unable to accomodate numSim>1")
         disp("fmax = 5")
-        disp("homophily = 0.5")
+        % disp("homophily = 0.5")
     end
 	addpath('Documents/socioclimate/Sociodynamics/EarthSystemsModel');
 	addpath('Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
@@ -60,7 +60,7 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim,
         % y = zeros(numel(tspan),6);
 
         random_params_yes_no = 0;
-        if numSim > 1
+        if (numSim > 1)|(numSim==1)
     		random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == use baseline
         end
 
@@ -93,8 +93,10 @@ function finResults = ParamPlane(vary1, vary1values, vary2, vary2values, numSim,
                 %%% REPLACE with inputted params; parameters_given
                 parameters_given.(vary1) = v1;
                 parameters_given.(vary2) = v2;
-                %parameters_given.homophily = 0.5;
-                %parameters_given.f_max = 5;
+                parameters_given.homophily = 0.5;
+                % parameters_given.f_max = 5;
+                % parameters_given.alpha_P1 = 0;
+                parameters_given.t_f = 15;                
 
                 cond1 = (vary1=="prop_R0");
                 cond2 = (vary2=="prop_R0");

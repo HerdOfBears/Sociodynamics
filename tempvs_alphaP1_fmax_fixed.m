@@ -12,9 +12,12 @@ function finResults = tempvs_alphaP1_fmax_fixed(numSim, tspan, homophilyVal, alp
         numSim = 2;
     end
 
-	addpath('./Sociodynamics/EarthSystemsModel');
-	addpath('./Sociodynamics/SocialDynamicsModel');
-	addpath('./Sociodynamics/data');
+	% addpath('./Sociodynamics/EarthSystemsModel');
+	% addpath('./Sociodynamics/SocialDynamicsModel');
+    % addpath('./Sociodynamics/data');
+    addpath('./Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/data');
 
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%%%%%%%%% Numerically integrating

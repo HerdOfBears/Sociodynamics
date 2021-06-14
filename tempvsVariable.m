@@ -1,0 +1,171 @@
+function finResults = tempvsVariable(vary1, v1vals, numSim, tspan)
+	% Yellow Jacket Model version
+    % Script created 2020-05-27 by jmenard
+    % previous version sampled new parameters for each different homophily value, while we want to sample 
+    % different params each simulation, not each homophily value.  
+
+    if numSim < 1
+        numSim = 2;
+    end
+
+	addpath('./Documents/socioclimate/Sociodynamics/EarthSystemsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/SocialDynamicsModel');
+	addpath('./Documents/socioclimate/Sociodynamics/data');
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%%% Numerically integrating
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	rng('default');
+    % rng('shuffle');
+
+	global data
+	data = csvread('Sociodynamics/data/co2TotalEmissions.csv');
+	data = data(:,[1,2]); % The first two columns are: time, CO2 emissions
+	data(:,2) = data(:,2); % Convert from MtC -> GtC
+
+
+	test_1751to2014  = csvread('Sociodynamics/data/blineParams_1800to2014.csv');
+	initial_conditions  = test_1751to2014(end,2:end)'; %transposed
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Initializations of output arrays
+    output_struct = struct();
+    end_result_peakTempVals  = zeros(length(v1vals), numSim);
+    end_result_peakPolarVals = zeros(length(v1vals), numSim);
+    end_result_time_xR0p9_xR = zeros(length(v1vals), numSim);
+    end_result_time_xR0p9_xP = zeros(length(v1vals), numSim);
+    end_result_time_xR0p8_xR = zeros(length(v1vals), numSim);
+    end_result_time_xR0p8_xP = zeros(length(v1vals), numSim);
+    end_result_time_xR0p6_xR = zeros(length(v1vals), numSim);
+    end_result_time_xR0p6_xP = zeros(length(v1vals), numSim);        
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%%%%%%%%%%% Iterate over simulations. Sample params. Iterate over homophily vals. 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+    %%% Iterate through the number of simulations (numSim) we are doing.         
+    %%% 1) FETCH parameters, sampled from triangle distributions
+    %%% Iterate through homophily values
+    %%% 2) REPLACE inputted params. 
+    %%% 3) numerically INTEGRATE system, getting results for those params
+    %%% 4) Compute max of median, and median of max
+    %%% 5) Collect into struct for output. 
+    tic
+    for idx_ = 1:1:numSim
+        if rem(idx_, 10) == 0
+            disp( strcat("simulation number = ", num2str(idx_)) );
+            toc
+            tic
+        end
+        % y = zeros(numel(tspan),6);
+
+		random_params_yes_no = 1; % 1 == sample from triangle dist.; 0 == use baseline
+        
+        %%% FETCH params
+        parameters_given = get_parameters_YJM(random_params_yes_no);
+
+        parameters_baseline  = get_parameters_YJM(0); % Fetches baseline parameters
+        xP0 = parameters_baseline.xP0;
+        xR0 = parameters_baseline.xR0;
+        vec_proportions = [xP0, xR0];
+
+        % initial_conditions(1) = xP0;%0.05;
+        % initial_conditions(2) = xR0;
+        if length(initial_conditions) == 7
+            initial_conditions = [xP0; xR0; initial_conditions(3:end, 1)];
+        end				
+        if length(initial_conditions) == 6
+            initial_conditions = [xP0; xR0; initial_conditions(2:end, 1)];
+        end
+        
+        for hValIdx = 1:1:length(v1vals)
+            
+            h_val = v1vals(hValIdx);
+
+            %%% REPLACE with inputted params; parameters_given
+            parameters_given.(vary1) = h_val;
+            parameters_given.f_max = 5;
+            % parameters_given.alpha_P1 = 5.0;
+            % pd_hom = makedist('Triangular', 'a', 0, 'b', 0.5, 'c', 1);
+            %omega = 3;
+            % parameters_given.homophily   = random(pd_hom,1,1); 
+            parameters_given.homophily=0.0;
+            % parameters_given.c_R = 0.4*parameters_given.omega_R;
+            % parameters_given.omega_P = 3.5*h_val;
+            
+            xP0 = parameters_given.xP0;
+            xR0 = parameters_given.xR0;
+            vec_proportions = [xP0, xR0];
+
+            initial_conditions(1) = xP0;
+            initial_conditions(2) = xR0;
+            
+            %%% INTEGRATE system to get results using those parameters. 
+            results_ = custom_RK4_YJM(@syst_odes_wSocCoupling_YJM, tspan, initial_conditions, parameters_given, test_1751to2014, vec_proportions);
+            
+            %%% COLLECT results over the runs.
+            %%% Grab the peak temperature over the series. 
+            temperature_vals_ = results_(:,7);
+            peak_T_val_ = max(temperature_vals_);
+
+            % need to normalize each group's fraction of mitigators to their respective size. 
+            xR = results_(:,2)./(parameters_given.prop_R0);
+            xP = results_(:,1)./(1-parameters_given.prop_R0);
+            diff_ =abs(xR-xP);
+            diff_shape = size(diff_);
+            length_ = max(diff_shape);
+            togive = max(diff_);
+            end_result_peakTempVals( hValIdx, idx_) = peak_T_val_;
+            end_result_peakPolarVals(hValIdx, idx_) = togive;%diff_(length_);%max(diff_); % using max(diff_) is misleading and shouldn't be used
+
+            % find year at which rich group is above 90% mitigators. 
+            ix_xR = find(xR>0.9, 1);
+            ix_xP = find(xP>0.9, 1);            
+            t_0p9_xR = tspan(ix_xR);
+            t_0p9_xP = tspan(ix_xP);
+            
+            ix_xR = find(xR>0.8, 1);
+            ix_xP = find(xP>0.8, 1);            
+            t_0p8_xR = tspan(ix_xR);
+            t_0p8_xP = tspan(ix_xP);
+
+            ix_xR = find(xR>0.6, 1);
+            ix_xP = find(xP>0.6, 1);            
+            t_0p6_xR = tspan(ix_xR);
+            t_0p6_xP = tspan(ix_xP);            
+            % size(t_0p9)
+            % disp(t_0p9)
+            if size(t_0p9_xR) == [1,1]
+                end_result_time_xR0p9_xR(hValIdx, idx_) = t_0p9_xR;
+            end
+            if size(t_0p9_xP) == [1,1]
+                end_result_time_xR0p9_xP(hValIdx, idx_) = t_0p9_xP;
+            end
+            if size(t_0p8_xR) == [1,1]
+                end_result_time_xR0p8_xR(hValIdx, idx_) = t_0p8_xR;
+            end
+            if size(t_0p8_xP) == [1,1]
+                end_result_time_xR0p8_xP(hValIdx, idx_) = t_0p8_xP;
+            end            
+            if size(t_0p6_xR) == [1,1]
+                end_result_time_xR0p6_xR(hValIdx, idx_) = t_0p6_xR;
+            end
+            if size(t_0p6_xP) == [1,1]
+                end_result_time_xR0p6_xP(hValIdx, idx_) = t_0p6_xP;
+            end                        
+        end % Gives result for 1 sample of parameters over each homophily value.         
+	end
+
+    % disp("giving mitigation proportion; xR-xP")
+    output_struct.peakT     = end_result_peakTempVals;
+    output_struct.peakPolar = end_result_peakPolarVals;
+    output_struct.t_0p9_xR     = end_result_time_xR0p9_xR;
+    output_struct.t_0p9_xP     = end_result_time_xR0p9_xP;
+    output_struct.t_0p8_xR     = end_result_time_xR0p8_xR;
+    output_struct.t_0p8_xP     = end_result_time_xR0p8_xP;
+    output_struct.t_0p6_xR     = end_result_time_xR0p6_xR;
+    output_struct.t_0p6_xP     = end_result_time_xR0p6_xP;        
+    % finResults = end_result_peakTempVals;
+    finResults = output_struct;
+end

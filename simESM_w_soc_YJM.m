@@ -82,6 +82,23 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily, alpha_P1)
 			if nargin==4
 				parameters_given.alpha_P1 = alpha_P1;
 				parameters_given.f_max = 5;
+				% parameters_given.xR0 = 0.0;
+				% parameters_given.xP0 = 0.0;
+
+				% %%% Checking solar flux mechanism 
+				% C_at0 = parameters_given.C_at0;
+				% f_gtm = parameters_given.f_gtm;
+				% k_a   = parameters_given.k_a;
+				% P_0   = parameters_given.P_0;
+				% latent_heat = parameters_given.latent_heat;
+				% A = parameters_given.A;				
+				% parameters_given.S = alpha_P1; % not really alpha_P1 here
+				% tao_CH4 = parameters_given.tao_CH4;
+				% S = parameters_given.S;
+
+				% parameters_given.tao_co2 = 1.73.*(mixingCO2a(0, C_at0, f_gtm, k_a)).^0.263;
+				% tao_co2 = parameters_given.tao_co2; 
+				% parameters_given.H = calibrate_humidity(P_0, latent_heat, A, S, tao_CH4, tao_co2);					
 			end
 
 			% parameters_given.xP0 = 0.05;
@@ -107,7 +124,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily, alpha_P1)
 				all_results.cveg   = [results_(:,5)];
 				all_results.cso    = [results_(:,6)];
 				all_results.T      = [results_(:,7)];
-				% all_results.params = [parameters_given];
+				all_results.params = [parameters_given];
 				all_results.prop_R0= [parameters_given.prop_R0];
 			end
 			if idx_>1
@@ -118,7 +135,7 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily, alpha_P1)
 				all_results.cveg   = [all_results.cveg,   results_(:,5)];
 				all_results.cso    = [all_results.cso,    results_(:,6)];
 				all_results.T      = [all_results.T,      results_(:,7)];
-				% all_results.params = [all_results.params, parameters_given];
+				all_results.params = [all_results.params, parameters_given];
 				all_results.prop_R0= [all_results.prop_R0, parameters_given.prop_R0];				
 			end
 		end
@@ -126,6 +143,5 @@ function finResults = simESM_w_soc_YJM(numSim, tspan, homophily, alpha_P1)
 		toc
 	end
 	all_results.pre2014 = test_1751to2014;
-	all_results.blineParams = bline_params_results;
 	finResults = all_results;
 end

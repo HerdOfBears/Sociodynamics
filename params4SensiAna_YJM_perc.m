@@ -19,14 +19,18 @@ function parameters =  params4SensiAna_YJM_perc(percentage_, vary_prop_)
 		upper_ = 1 + percentage_;
 		
 		temp_.homophily = [0,0.5,1.0];
-		% temp_.homophily = [0];
+		% temp_.homophily = [0,0,0];
+		% temp_.homophily = [1,1,1];		
+		% temp_.homophily = [1];
 
 		%%%% Parameters used in computing payoffs:
 		% temp_.alpha_P0 = 1.0; % 
 
 		temp_.alpha_P0 = [lower_*1.0, 1.0, upper_*1.0];
 		% temp_.alpha_P1 = 4.0; % Controls the cost of mitigative behaviour when there is no dissatisfaction
-		temp_.alpha_P1 = [lower_*4.5, 4.5, upper_*4.5];
+		% temp_.alpha_P1 = [lower_*4.5, 4.5, upper_*4.5];
+		temp_.alpha_P1 = [0*5, 1*5, 2*5];
+		% temp_.alpha_P1 = [10, 10, 10];
 		% temp_.alpha_R0 = 0.5; % Cost of mitigative behaviour for rich subpop.
 		temp_.alpha_R0 = [lower_*0.5, 0.5, upper_*0.5];
 		% Baseline per-capita income for rich and poor
@@ -45,13 +49,16 @@ function parameters =  params4SensiAna_YJM_perc(percentage_, vary_prop_)
 		temp_.Td_c =  [lower_.*1.5, 1.5, upper_.*1.5];	
 		% how quickly income decreases with large temperature deviations
 		% temp_.k_R = [lower_*3.5, 3.5, upper_*3.5];
-		temp_.k_P = [lower_*2.0, 2.0, upper_*2.0];
+		temp_.k_P = [lower_*1.5, 1.5, upper_*1.5];
+		% temp_.k_P = [1.0, 1.5, 6];		
 		temp_.k_R = [lower_*1.0, 1.0, upper_*1.0];
 		% temp_.k_P = [lower_*0.5, 0.5, upper_*0.5];		
-		temp_.c_R = [lower_*2.0, 2.0, upper_*2.0];
-		% temp_.c_P = [lower_*2.5, 2.5, upper_*2.5];
-		% temp_.c_R = [lower_*4.0, 4.0, upper_*4.0];
-		temp_.c_P = [lower_*3, 3, upper_*3];
+		% temp_.c_R = [lower_*2.0, 2.0, upper_*2.0];
+		% temp_.c_R = [lower_*0.15, 0.15, upper_*0.15];
+		temp_.c_R = [lower_*0.4, 0.4, upper_*0.4];
+
+		% temp_.c_P = [lower_*3, 3, upper_*3];
+		temp_.c_P = [lower_*0.85, 0.85, upper_*0.85];
 		% temp_.k_R = 0.5; 
 		% temp_.c_R = 3.0;
 		% temp_.k_P = 1.0;
@@ -200,11 +207,13 @@ function parameters =  params4SensiAna_YJM_perc(percentage_, vary_prop_)
 
 		%T_c = 2.5;
 		temp_.T_c   = [2.4, 2.5, 2.6];
-		
+		% temp_.T_c   = [0.9*2.5,2.5,1.1*2.6];
+
 		temp_.t_p   = 10; % num. prev. yrs used for temp pred.
 		
 		% t_f   = random(pdt_f, 1,1); % (0, 25, 50) num yrs ahead for temp. proj.
-		temp_.t_f   = [0, 25, 50];
+		% temp_.t_f   = [0, 25, 50];
+		temp_.t_f = [0.9*15,15,1.1*15];
 
 		%pds_  = makedist('Triangular', 'a', 30, 'b', 50, 'c', 70);
 		%s_    = 50;%;%random(pds_,1,1); % (30, 50, 70) half-sat. time for epsilon(t) from 2014
